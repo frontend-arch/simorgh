@@ -1,4 +1,6 @@
 import { storiesOf } from '@storybook/react';
+import { withKnobs } from '@storybook/addon-knobs';
+import getContextDecorator from '../../../../.storybook/helpers/getContextDecorator';
 import {
   FigureImage,
   FigureAmpImage,
@@ -16,7 +18,7 @@ import {
 } from './fixtureData';
 import AmpDecorator from '../../../../.storybook/helpers/ampDecorator';
 
-storiesOf('ArticleFigure', module)
+storiesOf('Article Figure/canonical', module)
   .add('with a caption', () => FigureImageWithCaption)
   .add('without a caption', () => FigureImage)
   .add('with non-BBC copyright', () => FigureImageWithCopyright)
@@ -34,7 +36,7 @@ storiesOf('ArticleFigure', module)
   )
   .add('with a lazyloaded image', () => FigureLazyLoadImage);
 
-storiesOf('ArticleFigure - AMP', module)
+storiesOf('Article Figure/amp', module)
   .addDecorator(AmpDecorator)
   .add('with a caption', () => FigureAmpImageWithCaption)
   .add('without a caption', () => FigureAmpImage)

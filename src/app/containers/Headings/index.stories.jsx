@@ -15,7 +15,7 @@ const headingsContainerWithContext = (type, blocks) => (
   </ServiceContext.Provider>
 );
 
-storiesOf('Heading Container', module)
+storiesOf('Headings', module)
   .add('default heading', () =>
     headingsContainerWithContext('headline', headline),
   )

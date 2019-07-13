@@ -1,9 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { withKnobs } from '@storybook/addon-knobs';
+import getContextDecorator from '../../../../.storybook/helpers/getContextDecorator';
 import ArticleTimestamp from '.';
 import { timestampGenerator } from './testHelpers';
-import { ServiceContextProvider } from '../../contexts/ServiceContext';
-import services from '../../lib/config/services';
 
 const threeHoursAgo = timestampGenerator({ hours: 3 });
 const fiveHoursAgo = timestampGenerator({ hours: 5 });
@@ -16,39 +16,19 @@ const twentyFourHoursAgo = timestampGenerator({
 const twoDaysAgo = timestampGenerator({ days: 2 });
 const threeDaysAgo = timestampGenerator({ days: 3 });
 
-// eslint-disable-next-line react/prop-types
-const WrappedArticleTimestamp = ({ service, ...rest }) => (
-  <ServiceContextProvider service={service || 'news'}>
-    <ArticleTimestamp {...rest} />
-  </ServiceContextProvider>
-);
-
-const stories = storiesOf('ArticleTimestamp', module);
-
-stories.add('default', () => (
-  <WrappedArticleTimestamp
-    firstPublished={1530947227000}
-    lastPublished={1552666749637}
-  />
-));
-
-Object.keys(services)
-  .filter(service => service !== 'default')
-  .forEach(service => {
-    stories.add(service, () => (
-      <WrappedArticleTimestamp
-        firstPublished={1530947227000}
-        lastPublished={1552666749637}
-        service={service}
-      />
-    ));
-  });
-
-stories
+storiesOf('Article Timestamp', module)
+  .addDecorator(withKnobs)
+  .addDecorator(getContextDecorator())
+  .add('default', () => (
+    <ArticleTimestamp
+      firstPublished={1530947227000}
+      lastPublished={1552666749637}
+    />
+  ))
   .add(
     'lastPublished === firstPublished and firstPublished < 10 hours ago',
     () => (
-      <WrappedArticleTimestamp
+      <ArticleTimestamp
         firstPublished={threeHoursAgo}
         lastPublished={threeHoursAgo}
       />
@@ -57,7 +37,7 @@ stories
   .add(
     'lastPublished === firstPublished and firstPublished today and > 10 hours ago',
     () => (
-      <WrappedArticleTimestamp
+      <ArticleTimestamp
         firstPublished={elevenHoursAgo}
         lastPublished={elevenHoursAgo}
       />
@@ -66,7 +46,7 @@ stories
   .add(
     'lastPublished === firstPublished and firstPublished before today',
     () => (
-      <WrappedArticleTimestamp
+      <ArticleTimestamp
         firstPublished={twentyFourHoursAgo}
         lastPublished={twentyFourHoursAgo}
       />
@@ -75,7 +55,7 @@ stories
   .add(
     'lastPublished today < 10 hours ago and firstPublished today < 10 hours ago',
     () => (
-      <WrappedArticleTimestamp
+      <ArticleTimestamp
         firstPublished={fiveHoursAgo}
         lastPublished={threeHoursAgo}
       />
@@ -84,7 +64,7 @@ stories
   .add(
     'lastPublished today > 10 hours ago and firstPublished today > 10 hours ago',
     () => (
-      <WrappedArticleTimestamp
+      <ArticleTimestamp
         firstPublished={twelveHoursAgo}
         lastPublished={elevenHoursAgo}
       />
@@ -93,7 +73,7 @@ stories
   .add(
     'lastPublished before today and firstPublished same day as lastPublished',
     () => (
-      <WrappedArticleTimestamp
+      <ArticleTimestamp
         firstPublished={threeDaysAgo}
         lastPublished={threeDaysAgo}
       />
@@ -102,7 +82,7 @@ stories
   .add(
     'lastPublished before today, !==firstPublished day and firstPublished before today',
     () => (
-      <WrappedArticleTimestamp
+      <ArticleTimestamp
         firstPublished={threeDaysAgo}
         lastPublished={twoDaysAgo}
       />
@@ -111,7 +91,7 @@ stories
   .add(
     'lastPublished today and > 10 hours and firstPublished before today',
     () => (
-      <WrappedArticleTimestamp
+      <ArticleTimestamp
         firstPublished={threeDaysAgo}
         lastPublished={elevenHoursAgo}
       />

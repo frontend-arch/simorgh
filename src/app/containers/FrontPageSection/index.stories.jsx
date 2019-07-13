@@ -24,15 +24,15 @@ const getSection = platform => (service, data) => (
 const getCanonicalSection = getSection('canonical');
 const getAmpSection = getSection('amp');
 
-storiesOf('Front Page Section container', module)
+storiesOf('Front Page Section/canonical', module)
   .add('igbo', () => getCanonicalSection('igbo', igboData.content.groups[0]))
   .add('pidgin', () =>
     getCanonicalSection('pidgin', pidginData.content.groups[0]),
   );
 
-storiesOf('Front Page Section container', module)
+storiesOf('Front Page Section/amp', module)
   .addDecorator(AmpDecorator)
-  .add('igbo - amp', () => getAmpSection('igbo', igboData.content.groups[0]))
-  .add('pidgin - amp', () =>
+  .add('igbo', () => getAmpSection('igbo', igboData.content.groups[0]))
+  .add('pidgin', () =>
     getAmpSection('pidgin', pidginData.content.groups[0]),
   );

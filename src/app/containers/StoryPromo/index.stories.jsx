@@ -37,13 +37,13 @@ const getStoryPromo = platform => item => (
 const getCanonicalStoryPromo = getStoryPromo('canonical');
 const getAmpStoryPromo = getStoryPromo('amp');
 
-storiesOf('Story Promo', module)
-  .add('canonical', () => getCanonicalStoryPromo(firstFixture))
+storiesOf('Story Promo/canonical', module)
+  .add('default', () => getCanonicalStoryPromo(firstFixture))
   .add('audio promo', () => getCanonicalStoryPromo(audioFixture))
   .add('video promo', () => getCanonicalStoryPromo(videoFixture));
 
-storiesOf('Story Promo', module)
+storiesOf('Story Promo/amp', module)
   .addDecorator(AmpDecorator)
-  .add('amp', () => getAmpStoryPromo(firstFixture))
-  .add('audio promo - amp', () => getAmpStoryPromo(audioFixture))
-  .add('video promo - amp', () => getAmpStoryPromo(videoFixture));
+  .add('default', () => getAmpStoryPromo(firstFixture))
+  .add('audio promo', () => getAmpStoryPromo(audioFixture))
+  .add('video promo', () => getAmpStoryPromo(videoFixture));

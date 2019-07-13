@@ -1,26 +1,11 @@
 import React from 'react';
+import { withKnobs } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
-import { ServiceContextProvider } from '../../contexts/ServiceContext';
+import getContextDecorator from '../../../../.storybook/helpers/getContextDecorator';
 import ErrorMain from '.';
 
 storiesOf('Error Page', module)
-  .add('404', () => (
-    <ServiceContextProvider service="news">
-      <ErrorMain status={404} />
-    </ServiceContextProvider>
-  ))
-  .add('500', () => (
-    <ServiceContextProvider service="news">
-      <ErrorMain status={500} />
-    </ServiceContextProvider>
-  ))
-  .add('404 - Persian', () => (
-    <ServiceContextProvider service="persian">
-      <ErrorMain status={404} />
-    </ServiceContextProvider>
-  ))
-  .add('500 - Persian', () => (
-    <ServiceContextProvider service="persian">
-      <ErrorMain status={500} />
-    </ServiceContextProvider>
-  ));
+  .addDecorator(withKnobs)
+  .addDecorator(getContextDecorator())
+  .add('404', () => <ErrorMain status={404} />)
+  .add('500', () => <ErrorMain status={500} />);

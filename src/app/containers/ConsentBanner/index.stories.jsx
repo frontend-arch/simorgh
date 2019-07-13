@@ -1,32 +1,25 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { storiesOf } from '@storybook/react';
-import { RequestContextProvider } from '../../contexts/RequestContext';
-import { ServiceContextProvider } from '../../contexts/ServiceContext';
+import { withKnobs } from '@storybook/addon-knobs';
+import getContextDecorator from '../../../../.storybook/helpers/getContextDecorator';
 import ConsentBanner from '.';
 import AmpDecorator from '../../../../.storybook/helpers/ampDecorator';
 
-const getConsentBanner = platform => (
-  <ServiceContextProvider service="news">
-    <RequestContextProvider
-      platform={platform}
-      isUK
-      origin="https://www.bbc.co.uk"
-      pageType="article"
-      id="c0000000000o"
-      statsDestination="NEWS_PS_TEST"
-      statsPageIdentifier="news.articles.c0000000000o"
-    >
-      <ConsentBanner />
-      This container uses cookies to conditionally render. If you can not see
-      the banner above please clear your cookies or view in incognito mode.
-    </RequestContextProvider>
-  </ServiceContextProvider>
+const ConsentBannerWithMessage = () => (
+  <Fragment>
+    <ConsentBanner />
+    This container uses cookies to conditionally render. If you can not see the
+    banner above please clear your cookies or view in incognito mode.
+  </Fragment>
 );
 
-storiesOf('ConsentBanner Container', module)
+storiesOf('Consent Banner', module)
+  .addDecorator(withKnobs)
+  .addDecorator(getContextDecorator({ platform: 'canonical' }))
+  .add('canonical', () => <ConsentBannerWithMessage />);
+
+storiesOf('Consent Banner', module)
+  .addDecorator(withKnobs)
   .addDecorator(AmpDecorator)
-  .add('amp', () => getConsentBanner('amp'));
-
-storiesOf('ConsentBanner Container', module).add('canonical', () =>
-  getConsentBanner('canonical'),
-);
+  .addDecorator(getContextDecorator({ platform: 'amp' }))
+  .add('amp', () => <ConsentBannerWithMessage />);
