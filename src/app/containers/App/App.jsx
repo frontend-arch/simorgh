@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useLayoutEffect, useState, useRef } from 'react';
 import { renderRoutes } from 'react-router-config';
 import { withRouter } from 'react-router-dom';
 import getRouteProps from '../../routes/getInitialData/utils/getRouteProps';
@@ -31,7 +31,7 @@ export const App = ({
 
   const isInitialMount = useRef(true);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (isInitialMount.current) {
       isInitialMount.current = false;
     } else {
@@ -45,7 +45,6 @@ export const App = ({
       } = getRouteProps(routes, location.pathname);
 
       setState({
-        data: null,
         service: nextService,
         id: nextId,
         isAmp: nextIsAmp,
@@ -65,6 +64,7 @@ export const App = ({
         } catch (error) {
           setState(prevState => ({
             ...prevState,
+            data: null,
             error,
             loading: false,
           }));
