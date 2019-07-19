@@ -2,6 +2,7 @@ import React, { Fragment } from 'react';
 import { configure, addDecorator, addParameters } from '@storybook/react';
 import { create } from '@storybook/theming';
 import GlobalStyle from '../src/app/lib/globalStyles';
+import 'storybook-chromatic';
 
 const req = require.context('../src/app', true, /\.stories\.jsx$/);
 

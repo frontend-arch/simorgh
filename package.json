@@ -57,7 +57,8 @@
     "updateSnapshots": "npm run test:unit -- -u",
     "webpack:prod": "NODE_ENV=production webpack",
     "webpack:dev:client": "NODE_ENV=development webpack-dev-server --inline --hot --env.config='client'",
-    "webpack:dev:server": "wait-on ./build/assets-local.json && NODE_ENV=development webpack --env.config='server'"
+    "webpack:dev:server": "wait-on ./build/assets-local.json && NODE_ENV=development webpack --env.config='server'",
+    "chromatic": "CHROMATIC_APP_CODE=e0rh8hehib chromatic test  --do-not-start"
   },
   "husky": {
     "hooks": {
@@ -168,6 +169,7 @@
     "babel-jest": "^24.8.0",
     "bbc-a11y": "^2.3.0",
     "chalk": "^2.4.1",
+    "storybook-chromatic": "^2.0.0",
     "chrome-launcher": "^0.10.5",
     "cypress": "3.4.0",
     "enzyme": "^3.10.0",
