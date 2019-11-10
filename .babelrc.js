@@ -1,11 +1,14 @@
 var plugins = [
   '@babel/plugin-proposal-object-rest-spread', // allows ...spread notation
   '@babel/plugin-syntax-dynamic-import', // allows `await import()` syntax
+  '@babel/plugin-transform-runtime',
+  '@loadable/babel-plugin',
   [
     'babel-plugin-styled-components',
     {
       ssr: true, // avoid checksum mismatches (different class generation between client & server)
       fileName: false, // prevent filename forming part of class name (duplication)
+      pure: true, // aides dead code elimination
     },
   ],
 ];
@@ -13,13 +16,17 @@ var plugins = [
 // allows dynamic `import()` in Node tests.
 if (process.env.NODE_ENV === 'test') {
   plugins.push('dynamic-import-node');
+  plugins.push('@babel/plugin-proposal-throw-expressions'); // allows `throw new Error();`
 }
 
 if (process.env.NODE_ENV === 'production') {
-  plugins.push(["transform-react-remove-prop-types", {
-    mode: 'remove',
-    removeImport: true
-  }]);
+  plugins.push([
+    'transform-react-remove-prop-types',
+    {
+      mode: 'remove',
+      removeImport: true,
+    },
+  ]);
 }
 
 module.exports = {
@@ -53,7 +60,7 @@ module.exports = {
   plugins: plugins,
   overrides: [
     {
-      test: /.*logger.*/,
+      test: /.*logger\..*/,
       sourceType: 'script',
     },
   ],

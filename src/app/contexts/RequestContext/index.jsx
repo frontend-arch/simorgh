@@ -1,11 +1,13 @@
 import React from 'react';
-import { bool, node, oneOf, string } from 'prop-types';
+import { bool, node, oneOf, string, number } from 'prop-types';
 import getStatsDestination from './getStatsDestination';
 import getStatsPageIdentifier from './getStatsPageIdentifier';
 import getOriginContext from './getOriginContext';
 import getEnv from './getEnv';
+import getMetaUrls from './getMetaUrls';
+import variantPropType from '../../models/propTypes/variants';
 
-export const RequestContext = React.createContext('default');
+export const RequestContext = React.createContext({});
 
 export const RequestContextProvider = ({
   children,
@@ -14,7 +16,10 @@ export const RequestContextProvider = ({
   isAmp,
   pageType,
   service,
+  statusCode,
   previousPath,
+  pathname,
+  variant,
 }) => {
   const { isUK, origin } = getOriginContext(bbcOrigin);
   const env = getEnv(origin);
@@ -39,7 +44,10 @@ export const RequestContextProvider = ({
     platform,
     statsDestination,
     statsPageIdentifier,
+    statusCode,
     previousPath,
+    variant,
+    ...getMetaUrls(origin, pathname),
   };
 
   return (
@@ -52,13 +60,27 @@ RequestContextProvider.propTypes = {
   children: node.isRequired,
   id: string,
   isAmp: bool.isRequired,
-  pageType: oneOf(['article', 'frontPage']).isRequired,
+  pageType: oneOf([
+    'article',
+    'frontPage',
+    'media',
+    'error',
+    'MAP',
+    'FIX',
+    'STY',
+    'PGL',
+  ]).isRequired,
   service: string.isRequired,
+  statusCode: number,
+  pathname: string.isRequired,
   previousPath: string,
+  variant: variantPropType,
 };
 
 RequestContextProvider.defaultProps = {
   bbcOrigin: null,
   id: null,
+  statusCode: null,
   previousPath: null,
+  variant: null,
 };

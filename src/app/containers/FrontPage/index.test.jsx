@@ -1,14 +1,32 @@
 import React from 'react';
 import { render } from '@testing-library/react';
-import { shouldMatchSnapshot } from '../../../testHelpers';
+import { shouldMatchSnapshot } from '@bbc/psammead-test-helpers';
 import FrontPageContainer from './index';
-import igboConfig from '../../lib/config/services/igbo';
-import igboData from '../../../../data/igbo/frontpage';
+import { service as igboConfig } from '#lib/config/services/igbo';
+import igboData from '#data/igbo/frontpage';
 import toggleReducer from '../../reducers/ToggleReducer';
-import defaultToggles from '../../lib/config/toggles';
+import defaultToggles from '#lib/config/toggles';
 
 // explicitly ignore console.log errors for Article/index:getInitialProps() error logging
 global.console.log = jest.fn();
+
+const defaultProps = {
+  isAmp: false,
+  pageType: 'frontPage',
+  service: 'news',
+  pathname: '/pathname',
+  data: { status: 200 },
+};
+
+jest.mock('../PageHandlers/withContexts', () => Component => {
+  const DataContainer = props => (
+    <div id="ContextsContainer">
+      <Component {...props} />
+    </div>
+  );
+
+  return DataContainer;
+});
 
 jest.mock('../PageHandlers/withPageWrapper', () => Component => {
   const PageWrapperContainer = props => (
@@ -50,6 +68,16 @@ jest.mock('../PageHandlers/withData', () => Component => {
   return DataContainer;
 });
 
+jest.mock('../PageHandlers/withContexts', () => Component => {
+  const ContextsContainer = props => (
+    <div id="ContextsContainer">
+      <Component {...props} />
+    </div>
+  );
+
+  return ContextsContainer;
+});
+
 jest.mock('../FrontPageMain', () => {
   return jest.fn().mockReturnValue(<div>FrontPageMain</div>);
 });
@@ -59,9 +87,10 @@ describe('FrontPageContainer', () => {
     describe('Composing the Front Page Container using the page handlers', () => {
       shouldMatchSnapshot(
         'should compose frontPageContainer with the Page Handler in the correct order',
-        <FrontPageContainer />,
+        <FrontPageContainer {...defaultProps} />,
       );
     });
+
     describe('Assertions', () => {
       let FrontPageComponent;
       beforeAll(() => {
@@ -76,17 +105,21 @@ describe('FrontPageContainer', () => {
             ...original,
             useContext: jest.fn(),
             useReducer: jest.fn(),
+            useState: jest.fn(),
           };
         });
 
-        const { useContext, useReducer } = jest.requireMock('react');
-        useContext.mockReturnValue(igboConfig);
+        const { useContext, useReducer, useState } = jest.requireMock('react');
+        useContext.mockReturnValue(igboConfig.default);
         FrontPageComponent = jest.requireActual('.').default;
         useReducer.mockReturnValue([toggleReducer, defaultToggles]);
+        useState.mockImplementation(input => [input, () => {}]);
       });
 
       it('should not render frontpage if still loading', () => {
-        const { container } = render(<FrontPageComponent loading />);
+        const { container } = render(
+          <FrontPageComponent {...defaultProps} loading />,
+        );
         const { textContent } = container.querySelector('main');
 
         expect(textContent).toEqual('');
@@ -95,7 +128,7 @@ describe('FrontPageContainer', () => {
 
       it('should render error page when an error occurs', () => {
         const { container } = render(
-          <FrontPageComponent error="An error Occured" />,
+          <FrontPageComponent {...defaultProps} error={new Error('oh no')} />,
         );
 
         const { textContent } = container.querySelector('main');
@@ -104,14 +137,18 @@ describe('FrontPageContainer', () => {
       });
 
       it('should render the frontpage with data', () => {
-        const data = {
-          pageData: igboData,
-          status: 200,
-        };
+        const pageData = igboData;
+        const status = 200;
 
         const frontPageMainMock = jest.requireMock('../FrontPageMain');
         const { container } = render(
-          <FrontPageComponent error="" data={data} service="igbo" />,
+          <FrontPageComponent
+            {...defaultProps}
+            error={null}
+            service="igbo"
+            pageData={pageData}
+            status={status}
+          />,
         );
 
         expect(frontPageMainMock.mock.calls).toHaveLength(1);

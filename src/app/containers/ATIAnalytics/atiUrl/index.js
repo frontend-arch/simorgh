@@ -6,18 +6,23 @@ import {
   getCurrentTime,
   getDeviceLanguage,
   getHref,
-  getProducer,
   getReferrer,
+  getAtUserId,
   isLocServeCookieSet,
   sanitise,
-} from '../../../lib/analyticsUtils';
+  getAtiUrl,
+  getClickInfo,
+  getProducer,
+} from '#lib/analyticsUtils';
+
+const spaceRegex = / /g;
 
 /*
  * For AMP pages, certain browser and device values are determined
  * https://github.com/ampproject/amphtml/blob/master/spec/amp-var-substitutions.md#device-and-browser
  */
 
-const atiPageViewParams = ({
+export const buildATIPageTrackPath = ({
   appName,
   contentId,
   contentType,
@@ -26,13 +31,15 @@ const atiPageViewParams = ({
   ldpThingLabels,
   pageIdentifier,
   pageTitle,
+  producerId,
   platform,
-  service,
   statsDestination,
   timePublished,
   timeUpdated,
   origin,
   previousPath,
+  categoryName,
+  campaigns,
 }) => {
   const pageViewBeaconValues = [
     {
@@ -42,9 +49,15 @@ const atiPageViewParams = ({
       wrap: false,
     },
     {
+      key: 'idclient',
+      description: 'at user id',
+      value: getAtUserId(),
+      wrap: false,
+    },
+    {
       key: 's2',
       description: 'producer',
-      value: getProducer(service),
+      value: producerId,
       wrap: false,
     },
     {
@@ -135,6 +148,20 @@ const atiPageViewParams = ({
       wrap: true,
     },
     {
+      key: 'x16',
+      description: 'campaigns',
+      value: (Array.isArray(campaigns) ? campaigns : [])
+        .map(campaign => campaign.campaignName.replace(spaceRegex, '%20'))
+        .join('~'),
+      wrap: true,
+    },
+    {
+      key: 'x17',
+      description: 'category',
+      value: categoryName,
+      wrap: true,
+    },
+    {
       key: 'x18',
       description: 'boolean - if locserve cookie value is defined',
       value: isLocServeCookieSet(),
@@ -142,13 +169,75 @@ const atiPageViewParams = ({
     },
   ];
 
-  const cleanedValues = pageViewBeaconValues.filter(({ value }) => value);
-
-  const parsedAtiValues = cleanedValues.map(({ key, value, wrap }) =>
-    wrap ? `${key}=[${value}]` : `${key}=${value}`,
-  );
-
-  return parsedAtiValues.join('&');
+  return getAtiUrl(pageViewBeaconValues);
 };
 
-export default atiPageViewParams;
+export const buildATIEventTrackUrl = ({
+  pageIdentifier,
+  service,
+  platform,
+  statsDestination,
+  element,
+  component,
+  label,
+  type,
+}) => {
+  const eventTrackingBeaconValues = [
+    {
+      key: 's',
+      description: 'destination',
+      value: getDestination(statsDestination),
+      wrap: false,
+    },
+    {
+      key: 's2',
+      description: 'producer',
+      value: getProducer(service),
+      wrap: false,
+    },
+    {
+      key: 'p',
+      description: 'page identifier',
+      value: pageIdentifier,
+      wrap: false,
+    },
+    {
+      key: 'r',
+      description: 'screen resolution & colour depth',
+      value: getScreenInfo(platform),
+      wrap: false,
+    },
+    {
+      key: 're',
+      description: 'browser/viewport resolution',
+      value: getBrowserViewPort(platform),
+      wrap: false,
+    },
+    {
+      key: 'hl',
+      description: 'time',
+      value: getCurrentTime(platform),
+      wrap: false,
+    },
+    {
+      key: 'lng',
+      description: 'device language',
+      value: getDeviceLanguage(platform),
+      wrap: false,
+    },
+    {
+      key: 'ati',
+      description: 'event publisher',
+      value: getClickInfo(element, {
+        service,
+        component,
+        label: label || '',
+        type: type || '',
+      }),
+    },
+  ];
+
+  return (
+    process.env.SIMORGH_ATI_BASE_URL + getAtiUrl(eventTrackingBeaconValues)
+  );
+};

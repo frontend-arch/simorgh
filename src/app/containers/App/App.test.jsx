@@ -14,7 +14,7 @@ describe('App', () => {
   let wrapper;
   const initialData = { pageData: 'Some initial data' };
   const error = 'Error!';
-  const match = { params: { service: 'news', amp: false } };
+  const match = { params: { service: 'news', amp: false, variant: '/simp' } };
   const history = { action: 'POP' };
 
   const route = {
@@ -46,13 +46,15 @@ describe('App', () => {
     expect(reactRouterConfig.renderRoutes).toHaveBeenCalledTimes(1);
     expect(reactRouterConfig.renderRoutes).toHaveBeenCalledWith([], {
       bbcOrigin: 'https://www.bbc.co.uk',
-      data: initialData,
-      error: null,
+      pageData: initialData.pageData,
+      error: undefined,
       isAmp: false,
       loading: false,
       pageType: 'article',
       service: 'news',
+      pathname: 'pathnameOne',
       previousPath: null,
+      variant: 'simp',
     });
     expect(wrapper).toMatchSnapshot();
   });
@@ -82,10 +84,12 @@ describe('App', () => {
       });
       describe('rejected loadInitialData', () => {
         it('should set state to the error', async () => {
-          route.getInitialData.mockImplementation(() => Promise.reject(error));
+          route.getInitialData.mockImplementation(() =>
+            Promise.resolve({ pageData: null, status: null, error }),
+          );
 
-          act(() => {
-            wrapper.setProps({ location: { pathname: 'pathnameThree' } });
+          await act(async () => {
+            wrapper.setProps({ location: { pathname: 'pathnameTwo' } });
           });
 
           await route.getInitialData;
@@ -97,14 +101,18 @@ describe('App', () => {
             [],
             {
               bbcOrigin: 'https://www.bbc.co.uk',
-              data: null,
+              pageData: null,
+              status: null,
               error: null,
+              errorCode: null,
               id: undefined,
               isAmp: false,
               loading: true,
               pageType: 'article',
               service: 'news',
+              pathname: 'pathnameTwo',
               previousPath: 'pathnameOne',
+              variant: 'simp',
             },
           );
 
@@ -114,13 +122,17 @@ describe('App', () => {
             [],
             {
               bbcOrigin: 'https://www.bbc.co.uk',
-              data: null,
+              pageData: null,
+              status: null,
               error,
+              errorCode: null,
               isAmp: false,
               loading: false,
               pageType: 'article',
               service: 'news',
+              pathname: 'pathnameTwo',
               previousPath: 'pathnameOne',
+              variant: 'simp',
             },
           );
         });
@@ -128,18 +140,20 @@ describe('App', () => {
 
       describe('successful fetch of route, match, and initial props', () => {
         it('should call set state with new data', async () => {
-          const pathname = 'pathnameFour';
-          const data = 'Really cool data';
+          const pathname = 'pathnameThree';
+          const data = { pageData: 'Really cool data', status: 200 };
 
           route.getInitialData.mockImplementation(() => Promise.resolve(data));
 
-          wrapper.setProps({ location: { pathname } });
+          await act(async () => {
+            wrapper.setProps({ location: { pathname } });
+          });
 
-          await route.getInitialData;
+          await route.getInitialData();
 
           expect.assertions(3);
 
-          expect(route.getInitialData).toHaveBeenCalledWith(match.params);
+          expect(route.getInitialData).toHaveBeenCalledWith(pathname);
 
           // start data fetch and set loading to true
           expect(reactRouterConfig.renderRoutes).toHaveBeenNthCalledWith(
@@ -147,14 +161,18 @@ describe('App', () => {
             [],
             {
               bbcOrigin: 'https://www.bbc.co.uk',
-              data: null,
+              pageData: null,
+              status: null,
               error: null,
+              errorCode: null,
               id: undefined,
               isAmp: false,
               loading: true,
               pageType: 'article',
               service: 'news',
-              previousPath: 'pathnameThree',
+              pathname: 'pathnameThree',
+              previousPath: 'pathnameTwo',
+              variant: 'simp',
             },
           );
 
@@ -164,14 +182,18 @@ describe('App', () => {
             [],
             {
               bbcOrigin: 'https://www.bbc.co.uk',
-              data,
-              error: null,
+              pageData: data.pageData,
+              status: data.status,
+              error: undefined,
+              errorCode: null,
               id: undefined,
               isAmp: false,
               loading: false,
               pageType: 'article',
               service: 'news',
-              previousPath: 'pathnameThree',
+              pathname: 'pathnameThree',
+              previousPath: 'pathnameTwo',
+              variant: 'simp',
             },
           );
         });

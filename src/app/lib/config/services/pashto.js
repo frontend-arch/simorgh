@@ -1,160 +1,240 @@
-import { C_POSTBOX } from '@bbc/psammead-styles/colours';
-import { latin } from '@bbc/gel-foundations/scripts';
-import { news as brandSVG } from '@bbc/psammead-assets/svgs';
+import { C_POSTBOX, C_WHITE } from '@bbc/psammead-styles/colours';
+import { arabic } from '@bbc/gel-foundations/scripts';
+import { pashto as brandSVG } from '@bbc/psammead-assets/svgs';
+import {
+  F_NASSIM_PASHTO_REGULAR,
+  F_NASSIM_PASHTO_BOLD,
+} from '@bbc/psammead-styles/fonts';
+import '@bbc/psammead-locales/moment/ps';
+import '@bbc/moment-timezone-include/tz/GMT';
+import { jalaali } from '@bbc/psammead-calendars';
+import withContext from '../../../contexts/utils/withContext';
 
-const service = {
-  lang: `ps-AF`,
-  articleAuthor: `https://www.facebook.com/pages/BBC-Pashto/167959249906191`,
-  articleTimestampPrefix: 'Updated',
-  atiAnalyticsAppName: 'news-pashto',
-  brandName: 'BBC News پښتو',
-  product: 'BBC News پښتو',
-  defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/pashto.png',
-  defaultImageAltText: 'BBC News پښتو',
-  dir: `ltr`,
-  externalLinkText: ', external',
-  imageCaptionOffscreenText: 'Image caption, ',
-  videoCaptionOffscreenText: 'Video caption, ',
-  audioCaptionOffscreenText: 'Audio caption',
-  defaultCaptionOffscreenText: 'Caption, ',
-  imageCopyrightOffscreenText: 'Image source, ',
-  locale: `ps-AF`,
-  datetimeLocale: `ps-AF`.toLowerCase(),
-  service: 'pashto',
-  serviceName: 'News پښتو',
-  themeColor: `${C_POSTBOX}`,
-  twitterCreator: '@bbcpashto',
-  twitterSite: '@bbcpashto',
-  noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
-  publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
-  script: latin,
-  manifestPath: '/articles/manifest.json',
-  swPath: '/articles/sw.js',
-  translations: {
-    error: {
-      404: {
-        statusCode: '404',
-        title: '404 - Page not found',
-        message:
-          'کیدای شي د ویبپاڼې ادرس مو سم نه وي لیکلی. لطفا پته او املا یې یو ځل بیا وګورئ.',
-        solutions: [
-          'Double checking the url',
-          'Hitting the refresh button in your browser',
-          'Searching for this page using the BBC search bar',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'د بي بي سي پښتو ویبپاڼه',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/pashto',
-      },
-      500: {
-        statusCode: '500',
-        title: '500 - Error',
-        message: 'یوه تخنیکي ستونزه وه. لطفا پاڼه مو رفرش کړئ',
-        solutions: [
-          'Hitting the refresh button in your browser',
-          'Coming back again later',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'د بي بي سي پښتو ویبپاڼه',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/pashto',
-      },
+export const service = {
+  default: {
+    lang: 'ps',
+    product: 'BBC News',
+    articleAuthor: 'https://www.facebook.com/bbcnews',
+    articleTimestampPrefix: 'تازه',
+    atiAnalyticsAppName: 'news-pashto',
+    atiAnalyticsProducerId: '68',
+    brandName: 'BBC News پښتو',
+    serviceLocalizedName: 'پښتو',
+    defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/pashto.png',
+    defaultImageAltText: 'BBC News پښتو',
+    dir: 'rtl',
+    externalLinkText: '، بهرنی',
+    imageCaptionOffscreenText: '، د عکس تشریح',
+    videoCaptionOffscreenText: '، د ویډیو تشریح',
+    audioCaptionOffscreenText: '، د غږ تشریح',
+    defaultCaptionOffscreenText: '، تشریح',
+    imageCopyrightOffscreenText: '، د عکس سرچینه',
+    locale: 'ps',
+    datetimeLocale: 'ps',
+    service: 'pashto',
+    serviceName: 'Pashto',
+    altCalendar: jalaali,
+    themeColor: `${C_POSTBOX}`,
+    twitterCreator: '@bbcpashto',
+    twitterSite: '@bbcpashto',
+    noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
+    publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
+    isTrustProjectParticipant: true,
+    script: arabic,
+    manifestPath: '/manifest.json',
+    swPath: '/sw.js',
+    frontPageTitle: 'کور پاڼه',
+    theming: {
+      brandBackgroundColour: `${C_POSTBOX}`,
+      brandLogoColour: `${C_WHITE}`,
     },
-    consentBanner: {
-      privacy: {
-        title: "We've updated our Privacy and Cookies Policy",
-        description: {
-          uk: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
-          international: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
+    translations: {
+      seeAll: 'See all',
+      home: 'کور پاڼه',
+      currentPage: 'اوسنۍ پاڼه',
+      skipLinkText: 'مطلب ته ورشئ',
+      relatedContent: 'اسی بارے میں',
+      mediaAssetPage: {
+        mediaPlayer: 'Media player',
+        audioPlayer: 'Audio player',
+        videoPlayer: 'Video player',
+      },
+      error: {
+        404: {
+          statusCode: '۴۰۴',
+          title: 'پاڼه نه موندل کېږي',
+          message: 'وبښئ، ستاسې پاڼه نه موندل کېږي. بیا هڅه وکړئ',
+          solutions: [
+            'لېنک مو یو ځل بیا وګورئ ',
+            'په براوزر کې د ریفرش تڼۍ کېکاږئ',
+            'دا پاڼه په بي بي سي بار کې ولټوئ',
+          ],
+          callToActionFirst: 'بله لاره دا ده چې د ',
+          callToActionLinkText: 'بي بي سي خبرونو پښتو پاڼې ته ورشئ ',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/pashto',
         },
-        accept: 'OK',
-        reject: "Find out what's changed",
-        rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
-      },
-      cookie: {
-        title: 'Let us know you agree to cookies',
-        description: {
-          uk: {
-            first: 'We use ',
-            linkText: 'cookies',
-            last:
-              ' to give you the best online experience. Please let us know if you agree to all of these cookies.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
-          international: {
-            first: 'We and our partners use technologies, such as ',
-            linkText: 'cookies',
-            last:
-              ', and collect browsing data to give you the best online experience and to personalise the content and advertising shown to you. Please let us know if you agree.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
+        500: {
+          statusCode: '۵۰۰',
+          title: 'په سرور کې د ننه ستونزه ده',
+          message: 'وبښئ، دا مهال ستاسې پاڼه نشو موندلی',
+          solutions: [
+            'په براوزر کې د ریفرش تڼۍ کېکاږئ',
+            'وروسته بیا را ستنېږو',
+          ],
+          callToActionFirst: 'بله لاره دا ده چې د ',
+          callToActionLinkText: 'بي بي سي خبرونو پښتو پاڼې ته ورشئ ',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/pashto',
         },
-        accept: 'Yes, I agree',
-        reject: 'No, take me to settings',
-        rejectUrl:
-          'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+      },
+      consentBanner: {
+        privacy: {
+          title: 'موږ د محرمیت او ډېټا په اړه خپله تګلاره تازه کړې',
+          description: {
+            uk: {
+              first:
+                'موږ د محرمیت او ډېټا په اړه خپله تګلاره تازه کړې او غواړو تاسې پوه شئ چې دا ستاسې لپاره څه معنی لري',
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+            international: {
+              first:
+                'موږ د محرمیت او ډېټا په اړه خپله تګلاره تازه کړې او غواړو تاسې پوه شئ چې دا ستاسې لپاره څه معنی لري',
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+          },
+          accept: 'اوکې',
+          reject: 'دلته وګورئ چې څه بدل شوي',
+          rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
+        },
+        cookie: {
+          title: 'راته ووایاست چې ایا غواړئ ډېټا در ولېږل شي',
+          description: {
+            uk: {
+              first: 'موږ ستاسې د اسانۍ لپاره ',
+              linkText: 'کوکیز',
+              last: ' کاروو. راته ووایاست چې ایا ډېټا در لېږلی شو',
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+            international: {
+              first: 'زموږ ملګري د ',
+              linkText: 'کوکیز',
+              last:
+                ' په څېر تکنالوژي کاروي او د براوزر ډېټا راټولوي. دا هر څه ستاسې د اسانۍ لپآره کېږي. که ورسره موافق یاست نو راته ولیکئ',
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+          },
+          accept: 'هو، موافق یم',
+          reject: 'نه، غواړم سېټنګز ته ولاړ شم',
+          rejectUrl:
+            'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+        },
+      },
+      media: {
+        audio: 'غږ',
+        photogallery: 'د عکسونو البوم',
+        video: 'ویډیو',
+        bbc_pashto_radio: {
+          title: 'بي بي سي افغانستان (پښتو خپرونه)',
+          subtitle:
+            'بي بي سي د افغانستان لپاره کورني، سیمه ییز او نړیوال وروستي او کره خبرونه د هر اړخېزو څېړونو او شننو سره تاسې ته وړاندې کوي. په پښتو او دري ژبو بېلا بېلې سیاسي، اقتصادي، ټولنېزې او روزنیزې خپرونې هر ورځ د سهار له ۵ بجو نه د شپې تر ۱۲ بجو پورې خپروي.',
+        },
+        bbc_pashto_tv: {
+          title: 'نړۍ دا وخت',
+          subtitle:
+            'د بي بي سي پښتو ټلویزیوني خپرونه چې هره ورځ د افغانستان په شپږ بجو په ژوندۍ بڼه خپرېږي. دلته یې لیدلی شئ.',
+        },
       },
     },
-    media: {
-      audio: 'غږ',
-      photogallery: 'د عکسونو البوم',
-      video: 'ویډیو',
+    brandSVG,
+    mostRead: {
+      header: 'ډېر لوستل شوي',
+      lastUpdated: 'د خپرېدو نیټه ',
     },
-  },
-  brandSVG,
-  footer: {
-    externalLink: {
-      href: 'https://www.bbc.co.uk/help/web/links/',
-      text: 'Read about our approach to external linking.',
+    footer: {
+      trustProjectLink: {
+        href: 'https://www.bbc.com/pashto/institutional-49283007',
+        text: 'ولې تاسې پر بي بي سي خبرونو باور کولی شئ',
+      },
+      externalLink: {
+        href: 'https://www.bbc.co.uk/help/web/links/',
+        text: 'د نورو ویبپاڼو لینکولو په اړه زموږ تګلاره.',
+      },
+      links: [
+        {
+          href: 'https://www.bbc.com/pashto/institutional-37620701',
+          text: 'د کارولو شرايط',
+        },
+        {
+          href: 'https://www.bbc.com/pashto/institutional-37622761',
+          text: 'د بي بي سي‌ په اړه',
+        },
+        {
+          href: 'https://www.bbc.com/pashto/institutional-37622762',
+          text: 'د محرميت تگلاره',
+        },
+        {
+          href: 'https://www.bbc.com/usingthebbc/cookies/',
+          text: 'کوکيز',
+        },
+        {
+          href: 'https://www.bbc.co.uk/pashto/institutional-37622768',
+          text: 'زموږ سره اړیکي',
+        },
+      ],
+      copyrightText: 'بي بي سي. بي بي‌ سي‌ د نورو ویبپاڼو د محتوا مسوله نه ده.',
     },
-    links: [
+    fonts: [F_NASSIM_PASHTO_REGULAR, F_NASSIM_PASHTO_BOLD],
+    timezone: 'GMT',
+    navigation: [
       {
-        href: 'https://www.bbc.com/news/help-41670342',
-        text: 'Why you can trust the BBC',
+        title: 'کور پاڼه',
+        url: '/pashto',
       },
       {
-        href: 'https://www.bbc.com/terms',
-        text: 'Terms of Use',
+        title: 'افغانستان',
+        url: '/pashto/afghanistan',
       },
       {
-        href: 'https://www.bbc.co.uk/aboutthebbc/',
-        text: 'About the BBC',
+        title: 'پښتونخوا',
+        url: '/pashto/pakhtunkhwa',
       },
       {
-        href: 'https://www.bbc.com/privacy/',
-        text: 'Privacy Policy',
+        title: 'نړۍ',
+        url: '/pashto/world',
       },
       {
-        href: 'https://www.bbc.com/usingthebbc/cookies/',
-        text: 'Cookies',
+        title: 'ښځې',
+        url: '/pashto/topics/e45cb5f8-3c87-4ebd-ac1c-058e9be22862',
       },
       {
-        href: 'https://www.bbc.com/accessibility/',
-        text: 'Accessibility Help',
+        title: 'لوبې',
+        url: '/pashto/sport',
       },
       {
-        href: 'https://www.bbc.com/contact/',
-        text: 'Contact the BBC',
+        title: 'ويډيوګانې',
+        url: '/pashto/media/video',
+      },
+      {
+        title: 'انځورونه',
+        url: '/pashto/media/photogalleries',
+      },
+      {
+        title: 'ځانګړې پاڼې',
+        url: '/pashto/in_depth',
+      },
+      {
+        title: 'کالم',
+        url: '/pashto/columns',
       },
     ],
-    copyrightText: 'بي بي سي د پردېو ویبپاڼو د محتوا مسوله نه ده.',
   },
-  fonts: [],
 };
 
-export default service;
+export default withContext(service);

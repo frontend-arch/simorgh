@@ -1,5 +1,5 @@
 import React from 'react';
-import { shouldMatchSnapshot } from '../../../testHelpers';
+import { shouldMatchSnapshot } from '@bbc/psammead-test-helpers';
 import {
   Grid,
   GhostGrid,
@@ -57,7 +57,7 @@ describe('Styled Grid items', () => {
             }}
           >
             <div>
-              {'Spanning a various number of columns depending on breakpoint'}
+              Spanning a various number of columns depending on breakpoint
             </div>
           </NestedGridItemSmall>
         </GridItemConstrainedSmall>
@@ -101,7 +101,7 @@ describe('Styled Grid items', () => {
             }}
           >
             <div>
-              {'Spanning a various number of columns depending on breakpoint'}
+              Spanning a various number of columns depending on breakpoint
             </div>
           </NestedGridItemMedium>
         </GridItemConstrainedMedium>
@@ -145,7 +145,7 @@ describe('Styled Grid items', () => {
             }}
           >
             <div>
-              {'Spanning a various number of columns depending on breakpoint'}
+              Spanning a various number of columns depending on breakpoint
             </div>
           </NestedGridItemLarge>
         </GridItemConstrainedLarge>
@@ -189,7 +189,7 @@ describe('Styled Grid items', () => {
             }}
           >
             <div>
-              {'Spanning a various number of columns depending on breakpoint'}
+              Spanning a various number of columns depending on breakpoint
             </div>
           </NestedGridItemLarge>
         </GridItemConstrainedLargeNoMargin>

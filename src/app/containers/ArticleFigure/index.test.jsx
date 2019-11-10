@@ -1,6 +1,6 @@
-import { mount } from 'enzyme';
+import { mount, render } from 'enzyme';
 import LazyLoad from 'react-lazyload';
-import { shouldMatchSnapshot } from '../../../testHelpers';
+import { shouldMatchSnapshot } from '@bbc/psammead-test-helpers';
 import {
   FigureImage,
   FigureAmpImage,
@@ -37,10 +37,11 @@ describe('ArticleFigure', () => {
     expect(Object.keys(wrapper.props()).length).toBe(7);
   });
 
-  shouldMatchSnapshot(
-    'should render a lazyloaded image when lazyLoad set to true',
-    FigureLazyLoadImage,
-  );
+  it('should render a lazyloaded image when lazyLoad set to true', () => {
+    // Render using enzyme to capture noscript contents
+    const container = render(FigureLazyLoadImage);
+    expect(container).toMatchSnapshot();
+  });
 
   shouldMatchSnapshot('should render an image with alt text', FigureImage);
 
@@ -61,12 +62,12 @@ describe('ArticleFigure', () => {
 
   shouldMatchSnapshot(
     'should render an image with caption text',
-    FigureImageWithCaption,
+    FigureImageWithCaption('news'),
   );
 
   shouldMatchSnapshot(
     'should render an AMP image with caption text',
-    FigureAmpImageWithCaption,
+    FigureAmpImageWithCaption('news'),
   );
 
   shouldMatchSnapshot(

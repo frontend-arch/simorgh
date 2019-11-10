@@ -15,13 +15,13 @@ exports[`InlineLinkContainer external link accessibility should be explicitly ma
 
 .c0:focus,
 .c0:hover {
-  color: #B80000;
   border-bottom: 2px solid #B80000;
+  color: #B80000;
 }
 
 <a
   aria-label="این لینک هست، لینک خارجی"
-  className="c0"
+  class="c0"
   href="https://www.example.com/"
 >
   این لینک هست
@@ -43,13 +43,13 @@ exports[`InlineLinkContainer external link accessibility should be explicitly ma
 
 .c0:focus,
 .c0:hover {
-  color: #B80000;
   border-bottom: 2px solid #B80000;
+  color: #B80000;
 }
 
 <a
   aria-label="This is a link, external"
-  className="c0"
+  class="c0"
   href="https://www.example.com/"
 >
   This is a link
@@ -71,13 +71,12 @@ exports[`InlineLinkContainer internal link not matching SPA route should render 
 
 .c0:focus,
 .c0:hover {
-  color: #B80000;
   border-bottom: 2px solid #B80000;
+  color: #B80000;
 }
 
 <a
-  aria-label={null}
-  className="c0"
+  class="c0"
   href="https://www.bbc.com/news"
 >
   <b>
@@ -101,14 +100,13 @@ exports[`InlineLinkContainer link matching routes for SPA should render correctl
 
 .c0:focus,
 .c0:hover {
-  color: #B80000;
   border-bottom: 2px solid #B80000;
+  color: #B80000;
 }
 
 <a
-  className="-Link c0"
+  class="-Link c0"
   href="/news/articles/c0g992jmmkko"
-  onClick={[Function]}
 >
   This is text for an internal link
 </a>
@@ -129,14 +127,13 @@ exports[`InlineLinkContainer link matching routes for SPA should render correctl
 
 .c0:focus,
 .c0:hover {
-  color: #B80000;
   border-bottom: 2px solid #B80000;
+  color: #B80000;
 }
 
 <a
-  className="-Link c0"
+  class="-Link c0"
   href="/news/articles/c0g992jmmkko"
-  onClick={[Function]}
 >
   This is text for an internal link
 </a>

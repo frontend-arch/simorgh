@@ -1,4 +1,6 @@
 import { storiesOf } from '@storybook/react';
+import { withKnobs } from '@storybook/addon-knobs';
+import { withServicesKnob } from '@bbc/psammead-storybook-helpers';
 import {
   FigureImage,
   FigureAmpImage,
@@ -16,13 +18,17 @@ import {
 } from './fixtureData';
 import AmpDecorator from '../../../../.storybook/helpers/ampDecorator';
 
-storiesOf('ArticleFigure', module)
-  .add('with a caption', () => FigureImageWithCaption)
+storiesOf('Containers|Article/Article Figure/Canonical', module)
+  .addParameters({ chromatic: { disable: true } })
+  .addDecorator(withKnobs)
+  .addDecorator(withServicesKnob())
+  .add('with a caption', ({ service }) => FigureImageWithCaption(service))
   .add('without a caption', () => FigureImage)
   .add('with non-BBC copyright', () => FigureImageWithCopyright)
   .add(
     'with a caption and non-BBC copyright',
     () => FigureImageWithCopyrightAndCaption,
+    { chromatic: { disable: true } },
   )
   .add(
     'with a caption containing an inline link',
@@ -34,9 +40,12 @@ storiesOf('ArticleFigure', module)
   )
   .add('with a lazyloaded image', () => FigureLazyLoadImage);
 
-storiesOf('ArticleFigure - AMP', module)
+storiesOf('Containers|Article/Article Figure/AMP', module)
+  .addParameters({ chromatic: { disable: true } })
+  .addDecorator(withKnobs)
+  .addDecorator(withServicesKnob())
   .addDecorator(AmpDecorator)
-  .add('with a caption', () => FigureAmpImageWithCaption)
+  .add('with a caption', ({ service }) => FigureAmpImageWithCaption(service))
   .add('without a caption', () => FigureAmpImage)
   .add('with non-BBC copyright', () => FigureAmpImageWithCopyright)
   .add(

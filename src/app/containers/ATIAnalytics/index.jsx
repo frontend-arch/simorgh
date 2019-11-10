@@ -1,27 +1,36 @@
-import React from 'react';
-import { oneOfType } from 'prop-types';
-import { RequestContext } from '../../contexts/RequestContext';
+import React, { useContext } from 'react';
+import { RequestContext } from '#contexts/RequestContext';
+import { ServiceContext } from '#contexts/ServiceContext';
 import CanonicalATIAnalytics from './canonical';
 import AmpATIAnalytics from './amp';
-import ArticleAtiParams from './params/article';
-import FrontPageAtiParams from './params/frontpage';
-import { articleDataPropTypes } from '../../models/propTypes/article';
-import { frontPageDataPropTypes } from '../../models/propTypes/frontPage';
+import { buildArticleATIUrl } from './params/article/buildParams';
+import { buildFrontPageATIUrl } from './params/frontpage/buildParams';
+import { buildRadioATIUrl } from './params/radioPage/buildParams';
+import { buildCpsAssetPageATIUrl } from './params/cpsAssetPage/buildParams';
+import { pageDataPropType } from '#models/propTypes/data';
 
 const ATIAnalytics = ({ data }) => {
-  const { pageType, platform } = React.useContext(RequestContext);
+  const requestContext = useContext(RequestContext);
+  const serviceContext = useContext(ServiceContext);
+  const { pageType, platform } = requestContext;
 
-  let pageviewParams = '';
-  switch (pageType) {
-    case 'article':
-      pageviewParams = ArticleAtiParams(data);
-      break;
-    case 'frontPage':
-      pageviewParams = FrontPageAtiParams(data);
-      break;
-    default:
-      return null;
+  const pageTypeHandlers = {
+    article: buildArticleATIUrl,
+    frontPage: buildFrontPageATIUrl,
+    media: buildRadioATIUrl,
+    MAP: buildCpsAssetPageATIUrl,
+  };
+
+  const isValidPageType = Object.keys(pageTypeHandlers).includes(pageType);
+  if (!isValidPageType) {
+    return null;
   }
+
+  const pageviewParams = pageTypeHandlers[pageType](
+    data,
+    requestContext,
+    serviceContext,
+  );
 
   return platform === 'amp' ? (
     <AmpATIAnalytics pageviewParams={pageviewParams} />
@@ -31,6 +40,7 @@ const ATIAnalytics = ({ data }) => {
 };
 
 ATIAnalytics.propTypes = {
-  data: oneOfType([articleDataPropTypes, frontPageDataPropTypes]).isRequired,
+  data: pageDataPropType.isRequired,
 };
+
 export default ATIAnalytics;

@@ -1,7 +1,7 @@
 import { storiesOf } from '@storybook/react';
 import React from 'react';
 import ImageContainer from '.';
-import { Grid } from '../../lib/styledGrid';
+import { Grid } from '#lib/styledGrid';
 import {
   custom,
   imageData,
@@ -10,7 +10,8 @@ import {
   square,
 } from './helpers/fixtureData';
 
-storiesOf('Image container within grid', module)
+storiesOf('Containers|Image within grid', module)
+  .addParameters({ chromatic: { disable: true } })
   .add('landscape image', () => (
     <Grid>
       <ImageContainer {...imageData(landscape)} />

@@ -1,15 +1,20 @@
 import React from 'react';
 import { node, string } from 'prop-types';
-import renderer from 'react-test-renderer';
-import { isNull } from '../../../testHelpers';
-import { RequestContextProvider } from '../../contexts/RequestContext';
-import { ServiceContextProvider } from '../../contexts/ServiceContext';
+import { render } from '@testing-library/react';
+import { isNull, suppressPropWarnings } from '@bbc/psammead-test-helpers';
+import { articleDataNews } from '../Article/fixtureData';
+import { RequestContextProvider } from '#contexts/RequestContext';
+import { ServiceContextProvider } from '#contexts/ServiceContext';
 
 import ATIAnalytics from '.';
 import * as amp from './amp';
 import * as canonical from './canonical';
-import * as articleatiparams from './params/article';
-import * as frontpageatiparams from './params/frontpage';
+import * as analyticsUtils from '../../lib/analyticsUtils';
+
+analyticsUtils.getCurrentTime = jest.fn().mockReturnValue('00-00-00');
+analyticsUtils.getPublishedDatetime = jest
+  .fn()
+  .mockReturnValue('1970-01-01T00:00:00.000Z');
 
 const ContextWrap = ({ pageType, platform, children }) => (
   <ServiceContextProvider service="news">
@@ -19,6 +24,8 @@ const ContextWrap = ({ pageType, platform, children }) => (
       isAmp={platform === 'amp'}
       pageType={pageType}
       service="news"
+      statusCode={200}
+      pathname="/pathname"
     >
       {children}
     </RequestContextProvider>
@@ -31,123 +38,154 @@ ContextWrap.propTypes = {
   platform: string.isRequired,
 };
 
-const mockData = {};
-const mockAtiQueryParams = 'key1=value1&key2=value2';
-
 describe('ATI Analytics Container', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   describe('pageType article', () => {
     it('should call CanonicalATIAnalytics when platform is canonical', () => {
+      const pageviewParams = [
+        's=598286',
+        's2=64',
+        'p=news.articles.c0000000001o.page',
+        'r=0x0x24x24',
+        're=1024x768',
+        'hl=00-00-00',
+        'lng=en-US',
+        'x1=[urn:bbc:optimo:c0000000001o]',
+        'x2=[responsive]',
+        'x3=[news]',
+        'x4=[en-gb]',
+        'x5=[http://localhost/]',
+        'x7=[article]',
+        'x9=[Article+Headline+for+SEO]',
+        'x11=[1970-01-01T00:00:00.000Z]',
+        'x12=[1970-01-01T00:00:00.000Z]',
+        'x13=[Royal+Wedding+2018~Duchess+of+Sussex]',
+        'x14=[2351f2b2-ce36-4f44-996d-c3c4f7f90eaa~803eaeb9-c0c3-4f1b-9a66-90efac3df2dc]',
+      ].join('&');
       const mockCanonical = jest.fn().mockReturnValue('canonical-return-value');
       canonical.default = mockCanonical;
 
-      const mockArticleAtiParams = jest
-        .fn()
-        .mockReturnValue(mockAtiQueryParams);
-      articleatiparams.default = mockArticleAtiParams;
-
-      renderer.create(
+      render(
         <ContextWrap platform="canonical" pageType="article">
-          <ATIAnalytics data={mockData} />
+          <ATIAnalytics data={articleDataNews} />
         </ContextWrap>,
       );
 
-      expect(mockCanonical).toHaveBeenCalledTimes(1);
-      expect(mockCanonical).toHaveBeenCalledWith(
-        {
-          pageviewParams: mockAtiQueryParams,
-        },
-        mockData,
-      );
-      expect(mockArticleAtiParams).toHaveBeenCalledTimes(1);
-      expect(mockArticleAtiParams).toHaveBeenCalledWith(mockData);
+      expect(mockCanonical.mock.calls[0][0]).toEqual({
+        pageviewParams,
+      });
     });
 
     it('should call AmpATIAnalytics when platform is Amp', () => {
+      const pageviewParams = [
+        's=598286',
+        's2=64',
+        'p=news.articles.c0000000001o.page',
+        `r=\${screenWidth}x\${screenHeight}x\${screenColorDepth}`,
+        `re=\${availableScreenWidth}x\${availableScreenHeight}`,
+        'hl=00-00-00',
+        `lng=\${browserLanguage}`,
+        'x1=[urn:bbc:optimo:c0000000001o]',
+        'x2=[amp]',
+        'x3=[news]',
+        'x4=[en-gb]',
+        `x5=[\${sourceUrl}]`,
+        `x6=[\${documentReferrer}]`,
+        'x7=[article]',
+        'x9=[Article+Headline+for+SEO]',
+        'x11=[1970-01-01T00:00:00.000Z]',
+        'x12=[1970-01-01T00:00:00.000Z]',
+        'x13=[Royal+Wedding+2018~Duchess+of+Sussex]',
+        'x14=[2351f2b2-ce36-4f44-996d-c3c4f7f90eaa~803eaeb9-c0c3-4f1b-9a66-90efac3df2dc]',
+      ].join('&');
+
       const mockAmp = jest.fn().mockReturnValue('amp-return-value');
       amp.default = mockAmp;
 
-      const mockArticleAtiParams = jest
-        .fn()
-        .mockReturnValue(mockAtiQueryParams);
-      articleatiparams.default = mockArticleAtiParams;
-
-      renderer.create(
+      render(
         <ContextWrap platform="amp" pageType="article">
-          <ATIAnalytics data={mockData} />
+          <ATIAnalytics data={articleDataNews} />
         </ContextWrap>,
       );
 
-      expect(mockAmp).toHaveBeenCalledTimes(1);
-      expect(mockAmp).toHaveBeenCalledWith(
-        {
-          pageviewParams: mockAtiQueryParams,
-        },
-        mockData,
-      );
-      expect(mockArticleAtiParams).toHaveBeenCalledTimes(1);
-      expect(mockArticleAtiParams).toHaveBeenCalledWith(mockData);
+      expect(mockAmp.mock.calls[0][0]).toEqual({
+        pageviewParams,
+      });
     });
   });
 
   describe('pageType=frontPage', () => {
     it('should call CanonicalATIAnalytics when platform is canonical', () => {
+      const pageviewParams = [
+        's=598286',
+        's2=64',
+        'p=news.page',
+        'r=0x0x24x24',
+        're=1024x768',
+        'hl=00-00-00',
+        'lng=en-US',
+        'x2=[responsive]',
+        'x3=[news]',
+        'x5=[http://localhost/]',
+        'x7=[index-home]',
+        'x11=[1970-01-01T00:00:00.000Z]',
+        'x12=[1970-01-01T00:00:00.000Z]',
+      ].join('&');
       const mockCanonical = jest.fn().mockReturnValue('canonical-return-value');
       canonical.default = mockCanonical;
 
-      const mockFrontPageAtiParams = jest
-        .fn()
-        .mockReturnValue(mockAtiQueryParams);
-      frontpageatiparams.default = mockFrontPageAtiParams;
-
-      renderer.create(
+      render(
         <ContextWrap platform="canonical" pageType="frontPage">
-          <ATIAnalytics data={mockData} />
+          <ATIAnalytics data={articleDataNews} />
         </ContextWrap>,
       );
 
-      expect(mockCanonical).toHaveBeenCalledTimes(1);
-      expect(mockCanonical).toHaveBeenCalledWith(
-        {
-          pageviewParams: mockAtiQueryParams,
-        },
-        mockData,
-      );
-      expect(mockFrontPageAtiParams).toHaveBeenCalledTimes(1);
-      expect(mockFrontPageAtiParams).toHaveBeenCalledWith(mockData);
+      expect(mockCanonical.mock.calls[0][0]).toEqual({
+        pageviewParams,
+      });
     });
 
     it('should call AmpATIAnalytics when platform is Amp', () => {
+      const pageviewParams = [
+        's=598286',
+        's2=64',
+        'p=news.page',
+        `r=\${screenWidth}x\${screenHeight}x\${screenColorDepth}`,
+        `re=\${availableScreenWidth}x\${availableScreenHeight}`,
+        'hl=00-00-00',
+        `lng=\${browserLanguage}`,
+        'x2=[amp]',
+        'x3=[news]',
+        `x5=[\${sourceUrl}]`,
+        `x6=[\${documentReferrer}]`,
+        'x7=[index-home]',
+        'x11=[1970-01-01T00:00:00.000Z]',
+        'x12=[1970-01-01T00:00:00.000Z]',
+      ].join('&');
       const mockAmp = jest.fn().mockReturnValue('amp-return-value');
       amp.default = mockAmp;
 
-      const mockFrontPageAtiParams = jest
-        .fn()
-        .mockReturnValue(mockAtiQueryParams);
-      frontpageatiparams.default = mockFrontPageAtiParams;
-
-      renderer.create(
+      render(
         <ContextWrap platform="amp" pageType="frontPage">
-          <ATIAnalytics data={mockData} />
+          <ATIAnalytics data={articleDataNews} />
         </ContextWrap>,
       );
 
-      expect(mockAmp).toHaveBeenCalledTimes(1);
-      expect(mockAmp).toHaveBeenCalledWith(
-        {
-          pageviewParams: mockAtiQueryParams,
-        },
-        mockData,
-      );
-      expect(mockFrontPageAtiParams).toHaveBeenCalledTimes(1);
-      expect(mockFrontPageAtiParams).toHaveBeenCalledWith(mockData);
+      expect(mockAmp.mock.calls[0][0]).toEqual({
+        pageviewParams,
+      });
     });
   });
 
   describe('pageType neither article nor frontPage', () => {
+    suppressPropWarnings(['pageType', 'randomvalue']);
     isNull(
       'should render null',
       <ContextWrap platform="canonical" pageType="randomvalue">
-        <ATIAnalytics data={mockData} />
+        <ATIAnalytics data={articleDataNews} />
       </ContextWrap>,
     );
   });

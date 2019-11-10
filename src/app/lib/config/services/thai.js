@@ -1,159 +1,218 @@
-import { C_POSTBOX } from '@bbc/psammead-styles/colours';
-import { latin } from '@bbc/gel-foundations/scripts';
-import { news as brandSVG } from '@bbc/psammead-assets/svgs';
+import { C_POSTBOX, C_WHITE } from '@bbc/psammead-styles/colours';
+import { thai } from '@bbc/gel-foundations/scripts';
+import { thai as brandSVG } from '@bbc/psammead-assets/svgs';
+import '@bbc/moment-timezone-include/tz/Asia/Bangkok';
+import '@bbc/psammead-locales/moment/th';
+import withContext from '../../../contexts/utils/withContext';
 
-const service = {
-  lang: `th-TH`,
-  articleAuthor: `https://www.facebook.com/BBCThai`,
-  articleTimestampPrefix: 'Updated',
-  atiAnalyticsAppName: 'news-thai',
-  brandName: 'BBC News บีบีซีไทย',
-  product: 'BBC News บีบีซีไทย',
-  defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/thai.png',
-  defaultImageAltText: 'BBC News บีบีซีไทย',
-  dir: `ltr`,
-  externalLinkText: ', external',
-  imageCaptionOffscreenText: 'Image caption, ',
-  videoCaptionOffscreenText: 'Video caption, ',
-  audioCaptionOffscreenText: 'Audio caption',
-  defaultCaptionOffscreenText: 'Caption, ',
-  imageCopyrightOffscreenText: 'Image source, ',
-  locale: `th-TH`,
-  datetimeLocale: `th-TH`.toLowerCase(),
-  service: 'thai',
-  serviceName: 'News ไทย',
-  themeColor: `${C_POSTBOX}`,
-  twitterCreator: '@bbc_thailand',
-  twitterSite: '@bbc_thailand',
-  noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
-  publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
-  script: latin,
-  manifestPath: '/articles/manifest.json',
-  swPath: '/articles/sw.js',
-  translations: {
-    error: {
-      404: {
-        statusCode: '404',
-        title: '404 - ไม่พบหน้าเว็บ',
-        message: 'กรุุณาตรวจสอบ URL และตัวสะกด อาจมีการพิมพ์ไม่ถูกต้อง',
-        solutions: [
-          'Double checking the url',
-          'Hitting the refresh button in your browser',
-          'Searching for this page using the BBC search bar',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'หน้าหลัก บีบีซีนิวส์',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/thai',
-      },
-      500: {
-        statusCode: '500',
-        title: '500 - เกิดความผิดพลาด',
-        message: 'เกิดความผิดพลาด กรุณารีเฟรชหน้าเว็บใหม่',
-        solutions: [
-          'Hitting the refresh button in your browser',
-          'Coming back again later',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'หน้าหลัก บีบีซีนิวส์',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/thai',
-      },
+export const service = {
+  default: {
+    lang: `th`,
+    // valid ISO 639-1 code - this is not the same as lang! see explanation in #3405
+    isoLang: `th`,
+    articleAuthor: `https://www.facebook.com/BBCThai`,
+    articleTimestampPrefix: 'ปรับปรุงแล้ว',
+    atiAnalyticsAppName: 'news-thai',
+    atiAnalyticsProducerId: '90',
+    brandName: 'BBC News บีบีซีไทย',
+    product: 'BBC News',
+    serviceLocalizedName: 'บีบีซีไทย',
+    defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/thai.png',
+    defaultImageAltText: 'BBC News บีบีซีไทย',
+    dir: `ltr`,
+    externalLinkText: ' ลิงก์จากภายนอก',
+    imageCaptionOffscreenText: 'คำบรรยายภาพ ',
+    videoCaptionOffscreenText: 'คำบรรยายวิดีโอ ',
+    audioCaptionOffscreenText: 'คำบรรยายเสียง ',
+    defaultCaptionOffscreenText: 'คำบรรยาย ',
+    imageCopyrightOffscreenText: 'ที่มาของภาพ ',
+    locale: `th-TH`,
+    datetimeLocale: 'th',
+    service: 'thai',
+    serviceName: 'News ไทย',
+    themeColor: `${C_POSTBOX}`,
+    twitterCreator: '@bbc_thailand',
+    twitterSite: '@bbc_thailand',
+    noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
+    publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
+    isTrustProjectParticipant: true,
+    script: thai,
+    manifestPath: '/manifest.json',
+    swPath: '/sw.js',
+    frontPageTitle: 'ข่าว ข่าววันนี้ ข่าวล่าสุด วีดีโอ',
+    theming: {
+      brandBackgroundColour: `${C_POSTBOX}`,
+      brandLogoColour: `${C_WHITE}`,
     },
-    consentBanner: {
-      privacy: {
-        title: "We've updated our Privacy and Cookies Policy",
-        description: {
-          uk: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
-          international: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
+    translations: {
+      seeAll: 'ดูทั้งหมด',
+      home: 'หน้าแรก',
+      currentPage: 'หน้าปัจจุบัน',
+      skipLinkText: 'ข้ามไปยังเนื้อหา',
+      relatedContent: 'อ่านข่าวนี้เพิ่มเติม',
+      mediaAssetPage: {
+        mediaPlayer: 'Media player',
+        audioPlayer: 'Audio player',
+        videoPlayer: 'Video player',
+      },
+      error: {
+        404: {
+          statusCode: '404',
+          title: 'ไม่พบเนื้อหา',
+          message:
+            'ขออภัย เราไม่สามารถแสดงเนื้อหาที่คุณกำลังค้นหาได้ กรุณาลอง:',
+          solutions: [
+            'ตรวจสอบชื่อเว็บไซต์ ',
+            'กดปุ่มรีเฟรชในบราวเซอร์ของคุณ',
+            'ค้นหาหน้านี้โดยใช้แถบค้นหาของ บีบีซี',
+          ],
+          callToActionFirst: 'กรุณาเข้าไปที่โฮมเพจของ ',
+          callToActionLinkText: 'บีบีซีไทย',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/thai',
         },
-        accept: 'OK',
-        reject: "Find out what's changed",
-        rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
-      },
-      cookie: {
-        title: 'Let us know you agree to cookies',
-        description: {
-          uk: {
-            first: 'We use ',
-            linkText: 'cookies',
-            last:
-              ' to give you the best online experience. Please let us know if you agree to all of these cookies.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
-          international: {
-            first: 'We and our partners use technologies, such as ',
-            linkText: 'cookies',
-            last:
-              ', and collect browsing data to give you the best online experience and to personalise the content and advertising shown to you. Please let us know if you agree.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
+        500: {
+          statusCode: '500',
+          title: 'เกิดข้อผิดพลาดภายในเซิร์ฟเวอร์ ',
+          message:
+            'ขออภัย เราไม่สามารถแสดงเนื้อหาที่คุณกำลังค้นหาได้ กรุณาลอง:',
+          solutions: [
+            'กดปุ่มรีเฟรชในบราวเซอร์ของคุณ',
+            'กลับเข้ามาใหม่ในภายหลัง',
+          ],
+          callToActionFirst: 'กรุณาเข้าไปที่โฮมเพจของ ',
+          callToActionLinkText: 'บีบีซีไทย',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/thai',
         },
-        accept: 'Yes, I agree',
-        reject: 'No, take me to settings',
-        rejectUrl:
-          'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+      },
+      consentBanner: {
+        privacy: {
+          title: 'เราได้ปรับปรุงนโยบายเกี่ยวกับความเป็นส่วนตัวและคุกกีส์แล้ว',
+          description: {
+            uk: {
+              first:
+                'เราได้แก้ไขข้อมูลที่สำคัญของนโยบายเกี่ยวกับความเป็นส่วนตัวและคุกกีส์ และเราต้องการให้คุณทราบถึง ผลกระทบต่อตัวคุณและข้อมูลของคุณ',
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+            international: {
+              first:
+                'เราได้แก้ไขข้อมูลที่สำคัญของนโยบายเกี่ยวกับความเป็นส่วนตัวและคุกกีส์ และเราต้องการให้คุณทราบถึง ผลกระทบต่อตัวคุณและข้อมูลของคุณ',
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+          },
+          accept: 'ตกลง',
+          reject: 'ดูว่ามีอะไรเปลี่ยนแปลงไปบ้าง',
+          rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
+        },
+        cookie: {
+          title: 'กรุณาแจ้งให้เราทราบว่า คุณยอมรับคุกกีส์',
+          description: {
+            uk: {
+              first: 'เราใช้ ',
+              linkText: 'คุกกีส์',
+              last:
+                ' เพื่อให้คุณได้รับประสบการณ์ที่ดีที่สุดในโลกออนไลน์ กรุณาแจ้งให้เราทราบว่า คุณยอมรับคุกกีส์ทั้งหมดนี้',
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+            international: {
+              first: 'เราและพันธมิตรใช้เทคโนโลยี อย่างเช่น ',
+              linkText: 'คุกกีส์',
+              last:
+                ' และข้อมูลการเข้าเว็บไซต์ต่าง ๆ ที่ถูกจัดเก็บไว้ เพื่อทำให้คุณได้รับประสบการณ์ที่ดีที่สุดในโลกออนไลน์ และทำให้เนื้อหาและโฆษณาที่คุณได้รับตรงกับความสนใจของคุณ กรุณาแจ้งให้เราทราบว่าคุณยอมรับหรือไม่',
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+          },
+          accept: 'ยอมรับ',
+          reject: 'ไม่ยอมรับ ไปที่การตั้งค่า',
+          rejectUrl:
+            'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+        },
+      },
+      media: {
+        audio: 'เสียง',
+        photogallery: 'แกลเลอรีภาพ',
+        video: 'วิดีโอ',
       },
     },
-    media: {
-      audio: 'เสียง',
-      photogallery: 'แกลเลอรีภาพ',
-      video: 'วิดีโอ',
+    brandSVG,
+    mostRead: {
+      header: 'ได้รับความนิยมสูงสุด',
+      lastUpdated: 'อัพเดทล่าสุดเมื่อเวลา ',
     },
-  },
-  brandSVG,
-  footer: {
-    externalLink: {
-      href: 'https://www.bbc.co.uk/help/web/links/',
-      text: 'Read about our approach to external linking.',
-    },
-    links: [
+    navigation: [
       {
-        href: 'https://www.bbc.com/news/help-41670342',
-        text: 'Why you can trust the BBC',
+        title: 'หน้าแรก',
+        url: '/thai',
       },
       {
-        href: 'https://www.bbc.com/terms',
-        text: 'Terms of Use',
+        title: 'ประเทศไทย',
+        url: '/thai/topics/1ed75fd4-f992-46db-9859-fb5a7c95da91',
       },
       {
-        href: 'https://www.bbc.co.uk/aboutthebbc/',
-        text: 'About the BBC',
+        title: 'ต่างประเทศ',
+        url: '/thai/international',
       },
       {
-        href: 'https://www.bbc.com/privacy/',
-        text: 'Privacy Policy',
+        title: 'วิทยาศาสตร์',
+        url: '/thai/topics/0f469e6a-d4a6-46f2-b727-2bd039cb6b53',
       },
       {
-        href: 'https://www.bbc.com/usingthebbc/cookies/',
-        text: 'Cookies',
+        title: 'สุขภาพ',
+        url: '/thai/topics/c4794229-7f87-43ce-ac0a-6cfcd6d3cef2',
       },
       {
-        href: 'https://www.bbc.com/accessibility/',
-        text: 'Accessibility Help',
+        title: 'วิดีโอ',
+        url: '/thai/media/video',
       },
       {
-        href: 'https://www.bbc.com/contact/',
-        text: 'Contact the BBC',
+        title: 'ยอดนิยม',
+        url: '/thai/popular/read',
       },
     ],
-    copyrightText: 'บีบีซีไม่มีส่วนรับผิดชอบต่อเนื้อหาจากเว็บไซต์ภายนอก',
+    footer: {
+      trustProjectLink: {
+        href: 'https://www.bbc.com/thai/institutional-49281839',
+        text: 'ทำไมคุณจึงไว้วางใจ บีบีซี นิวส์ ได้',
+      },
+      externalLink: {
+        href: 'https://www.bbc.co.uk/help/web/links/',
+        text: 'นโยบายของเราเรื่องการเชื่อมต่อไปยังลิงก์ภายนอก.',
+      },
+      links: [
+        {
+          href: 'https://www.bbc.com/thai/institutional-38403477',
+          text: 'เงื่อนไขการใช้งานของ BBC',
+        },
+        {
+          href: 'https://www.bbc.com/thai/institutional-38403476',
+          text: 'เกี่ยวกับบีบีซี',
+        },
+        {
+          href: 'https://www.bbc.com/thai/institutional-38497681',
+          text: 'นโยบายความเป็นส่วนตัว',
+        },
+        {
+          href: 'https://www.bbc.com/usingthebbc/cookies/',
+          text: 'Cookies',
+        },
+        {
+          href: 'https://www.bbc.com/thai/institutional-37981748',
+          text: 'ติดต่อบีบีซี',
+        },
+      ],
+      copyrightText:
+        'บีบีซี. บีบีซีไม่มีส่วนรับผิดชอบต่อเนื้อหาของเว็บไซต์ภายนอก.',
+    },
+    fonts: [],
+    timezone: 'Asia/Bangkok',
   },
-  fonts: [],
 };
 
-export default service;
+export default withContext(service);

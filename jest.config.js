@@ -1,3 +1,5 @@
+const { jestDirAlias } = require('./dirAlias');
+
 module.exports = {
   collectCoverageFrom: [
     '**/(src|scripts)/**/*.{js,jsx}',
@@ -8,4 +10,9 @@ module.exports = {
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'],
   snapshotSerializers: ['enzyme-to-json/serializer'],
   setupFilesAfterEnv: ['./src/testHelpers/setupTests.js'],
+  moduleNameMapper: jestDirAlias,
+  transform: {
+    '^.+\\.js$': 'babel-jest',
+    '^.+\\.jsx$': 'babel-jest',
+  },
 };

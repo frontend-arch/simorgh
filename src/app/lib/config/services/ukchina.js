@@ -1,16 +1,19 @@
-import { C_POSTBOX } from '@bbc/psammead-styles/colours';
-import { latin } from '@bbc/gel-foundations/scripts';
-import { news as brandSVG } from '@bbc/psammead-assets/svgs';
+import { C_POSTBOX, C_WHITE } from '@bbc/psammead-styles/colours';
+import { noAscendersOrDescenders } from '@bbc/gel-foundations/scripts';
+import { ukchina as brandSVG } from '@bbc/psammead-assets/svgs';
+import '@bbc/moment-timezone-include/tz/GMT';
+import withContext from '../../../contexts/utils/withContext';
 
-const service = {
-  lang: `zh-cn`,
+const baseServiceConfig = {
   articleAuthor: `https://www.facebook.com/bbcworldservice/`,
   articleTimestampPrefix: 'Updated',
   atiAnalyticsAppName: 'news-ukchina',
-  brandName: 'BBC News 中文',
-  product: 'BBC News 中文',
+  atiAnalyticsProducerId: '93',
+  brandName: 'BBC 英伦网',
+  product: 'BBC',
+  serviceLocalizedName: '英伦网',
   defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/ukchina.png',
-  defaultImageAltText: 'BBC News 中文',
+  defaultImageAltText: 'BBC 英伦网',
   dir: `ltr`,
   externalLinkText: ', external',
   imageCaptionOffscreenText: 'Image caption, ',
@@ -18,19 +21,34 @@ const service = {
   audioCaptionOffscreenText: 'Audio caption',
   defaultCaptionOffscreenText: 'Caption, ',
   imageCopyrightOffscreenText: 'Image source, ',
-  locale: `zh-cn`,
-  datetimeLocale: `zh-cn`.toLowerCase(),
+  datetimeLocale: `zh-cn`,
   service: 'ukchina',
-  serviceName: 'News 中文',
+  serviceName: '英伦网',
   themeColor: `${C_POSTBOX}`,
   twitterCreator: '@BBCChina',
   twitterSite: '@BBCChina',
   noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
   publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
-  script: latin,
-  manifestPath: '/articles/manifest.json',
-  swPath: '/articles/sw.js',
+  isTrustProjectParticipant: true,
+  script: noAscendersOrDescenders,
+  manifestPath: '/manifest.json',
+  swPath: '/sw.js',
+  frontPageTitle: '主页',
+  theming: {
+    brandBackgroundColour: `${C_POSTBOX}`,
+    brandLogoColour: `${C_WHITE}`,
+  },
   translations: {
+    seeAll: 'See all',
+    home: 'Home',
+    currentPage: 'Current page',
+    skipLinkText: 'Skip to content',
+    relatedContent: 'Related content',
+    mediaAssetPage: {
+      mediaPlayer: 'Media player',
+      audioPlayer: 'Audio player',
+      videoPlayer: 'Video player',
+    },
     error: {
       404: {
         statusCode: '404',
@@ -116,23 +134,23 @@ const service = {
     },
   },
   brandSVG,
+  mostRead: {
+    header: 'Most read',
+    lastUpdated: 'Last updated: ',
+  },
   footer: {
+    trustProjectLink: {
+      href: 'https://www.bbc.com/news/help-41670342',
+      text: 'Why you can trust the BBC',
+    },
     externalLink: {
       href: 'https://www.bbc.co.uk/help/web/links/',
       text: 'Read about our approach to external linking.',
     },
     links: [
       {
-        href: 'https://www.bbc.com/news/help-41670342',
-        text: 'Why you can trust the BBC',
-      },
-      {
         href: 'https://www.bbc.com/terms',
         text: 'Terms of Use',
-      },
-      {
-        href: 'https://www.bbc.co.uk/aboutthebbc/',
-        text: 'About the BBC',
       },
       {
         href: 'https://www.bbc.com/privacy/',
@@ -143,17 +161,87 @@ const service = {
         text: 'Cookies',
       },
       {
-        href: 'https://www.bbc.com/accessibility/',
-        text: 'Accessibility Help',
-      },
-      {
         href: 'https://www.bbc.com/contact/',
         text: 'Contact the BBC',
       },
     ],
-    copyrightText: 'BBC不为BBC以外的网站的内容负责',
+    copyrightText: 'BBC。BBC不为BBC以外的网站的内容负责',
   },
   fonts: [],
+  timezone: 'GMT',
 };
 
-export default service;
+export const service = {
+  simp: {
+    ...baseServiceConfig,
+    lang: `zh-hans`,
+    locale: `zh-hans`,
+    navigation: [
+      {
+        title: '主页',
+        url: '/ukchina/simp',
+      },
+      {
+        title: 'BBC精选',
+        url: '/ukchina/simp/horizon',
+      },
+      {
+        title: '英伦风采',
+        url: '/ukchina/simp/cool_britannia',
+      },
+      {
+        title: '记者来鸿',
+        url: '/ukchina/simp/fooc',
+      },
+      {
+        title: '英国体坛',
+        url: '/ukchina/simp/sport',
+      },
+      {
+        title: '视频内容',
+        url: '/ukchina/simp/media/video',
+      },
+      {
+        title: '图辑精选',
+        url: '/ukchina/simp/media/photogalleries',
+      },
+    ],
+  },
+  trad: {
+    ...baseServiceConfig,
+    lang: `zh-hant`,
+    locale: `zh-hant`,
+    navigation: [
+      {
+        title: '主頁',
+        url: '/ukchina/trad',
+      },
+      {
+        title: 'BBC精選',
+        url: '/ukchina/trad/horizon',
+      },
+      {
+        title: '英倫風采',
+        url: '/ukchina/trad/cool_britannia',
+      },
+      {
+        title: '記者來鴻',
+        url: '/ukchina/trad/fooc',
+      },
+      {
+        title: '英國體壇',
+        url: '/ukchina/trad/sport',
+      },
+      {
+        title: '視頻內容',
+        url: '/ukchina/trad/media/video',
+      },
+      {
+        title: '圖輯精選',
+        url: '/ukchina/trad/media/photogalleries',
+      },
+    ],
+  },
+};
+
+export default withContext(service);

@@ -1,23 +1,24 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import {
   AMP_SCRIPT,
   AMP_NO_SCRIPT,
+  AMP_JS,
+  AMP_GEO_JS,
+  AMP_CONSENT_JS,
+  AMP_ANALYTICS_JS,
 } from '@bbc/psammead-assets/amp-boilerplate';
-import ResourceHints from '../../app/components/ResourceHints';
-import IfAboveIE9 from '../../app/components/IfAboveIE9Comment';
-import MPulseBeacon from '../../app/containers/MPulseBeacon';
-import { DialContextProvider } from '../../app/contexts/DialContext';
+import ResourceHints from '#app/components/ResourceHints';
+import IfAboveIE9 from '#app/components/IfAboveIE9Comment';
 
 /* eslint-disable react/prop-types */
 const Document = ({
-  assets,
   assetOrigins,
   app,
   data,
   styleTags,
   helmet,
   isAmp,
-  dials,
+  scripts,
 }) => {
   const htmlAttrs = helmet.htmlAttributes.toComponent();
   const meta = helmet.meta.toComponent();
@@ -26,20 +27,10 @@ const Document = ({
   const headScript = helmet.script.toComponent();
   const serialisedData = JSON.stringify(data);
   const scriptsAllowed = !isAmp;
-  const scripts = (
-    <Fragment>
-      <IfAboveIE9>
-        {assets.map(asset => (
-          <script
-            crossOrigin="anonymous"
-            key={asset}
-            type="text/javascript"
-            src={asset}
-            defer
-          />
-        ))}
-      </IfAboveIE9>
-    </Fragment>
+  const scriptTags = (
+    <>
+      <IfAboveIE9>{scripts}</IfAboveIE9>
+    </>
   );
 
   return (
@@ -52,52 +43,36 @@ const Document = ({
         {links}
         {styleTags}
         {headScript}
-        {scriptsAllowed && (
-          <DialContextProvider dials={dials}>
-            <MPulseBeacon />
-          </DialContextProvider>
-        )}
         {isAmp && (
-          <Fragment>
+          <>
             <style amp-boilerplate="">{AMP_SCRIPT}</style>
             <noscript>
               <style amp-boilerplate="">{AMP_NO_SCRIPT}</style>
             </noscript>
-          </Fragment>
+          </>
         )}
         {isAmp && (
-          <Fragment>
-            <script key="amp" async src="https://cdn.ampproject.org/v0.js" />
-            <script
-              async
-              custom-element="amp-geo"
-              src="https://cdn.ampproject.org/v0/amp-geo-0.1.js"
-            />
-            <script
-              async
-              custom-element="amp-consent"
-              src="https://cdn.ampproject.org/v0/amp-consent-0.1.js"
-            />
-            <script
-              async
-              custom-element="amp-analytics"
-              src="https://cdn.ampproject.org/v0/amp-analytics-0.1.js"
-            />
-          </Fragment>
+          <>
+            {AMP_JS}
+            {AMP_GEO_JS}
+            {AMP_CONSENT_JS}
+            {AMP_ANALYTICS_JS}
+          </>
         )}
       </head>
       <body>
-        {/* eslint-disable react/no-danger */
-        /* disabling the rule that bans the use of dangerouslySetInnerHTML until a more appropriate implementation can be implemented */}
+        {/* disabling the rule that bans the use of dangerouslySetInnerHTML until a more appropriate implementation can be implemented */}
+        {/* eslint-disable-next-line react/no-danger */}
         <div id="root" dangerouslySetInnerHTML={{ __html: app }} />
         {scriptsAllowed && (
           <script
+            /* eslint-disable-next-line react/no-danger */
             dangerouslySetInnerHTML={{
               __html: `window.SIMORGH_DATA=${serialisedData}`,
             }}
           />
         )}
-        {scriptsAllowed && scripts}
+        {scriptsAllowed && scriptTags}
       </body>
     </html>
   );

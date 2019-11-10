@@ -1,161 +1,247 @@
-import { C_POSTBOX } from '@bbc/psammead-styles/colours';
-import { latin } from '@bbc/gel-foundations/scripts';
-import { news as brandSVG } from '@bbc/psammead-assets/svgs';
+import { C_POSTBOX, C_WHITE } from '@bbc/psammead-styles/colours';
+import { latinDiacritics } from '@bbc/gel-foundations/scripts';
+import {
+  F_REITH_SANS_BOLD,
+  F_REITH_SANS_BOLD_ITALIC,
+  F_REITH_SANS_ITALIC,
+  F_REITH_SANS_REGULAR,
+  F_REITH_SERIF_MEDIUM,
+  F_REITH_SERIF_MEDIUM_ITALIC,
+} from '@bbc/psammead-styles/fonts';
+import { mundo as brandSVG } from '@bbc/psammead-assets/svgs';
+import '@bbc/moment-timezone-include/tz/GMT';
+import '@bbc/psammead-locales/moment/es';
+import withContext from '../../../contexts/utils/withContext';
 
-const service = {
-  lang: `es-005`,
-  articleAuthor: `https://www.facebook.com/bbcmundo`,
-  articleTimestampPrefix: 'Updated',
-  atiAnalyticsAppName: 'news-mundo',
-  brandName: 'BBC News Mundo',
-  product: 'BBC News Mundo',
-  defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/mundo.png',
-  defaultImageAltText: 'BBC News Mundo',
-  dir: `ltr`,
-  externalLinkText: ', external',
-  imageCaptionOffscreenText: 'Image caption, ',
-  videoCaptionOffscreenText: 'Video caption, ',
-  audioCaptionOffscreenText: 'Audio caption',
-  defaultCaptionOffscreenText: 'Caption, ',
-  imageCopyrightOffscreenText: 'Image source, ',
-  locale: `es-005`,
-  datetimeLocale: `es-005`.toLowerCase(),
-  service: 'mundo',
-  serviceName: 'News Mundo',
-  themeColor: `${C_POSTBOX}`,
-  twitterCreator: '@bbcmundo',
-  twitterSite: '@bbcmundo',
-  noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
-  publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
-  script: latin,
-  manifestPath: '/articles/manifest.json',
-  swPath: '/articles/sw.js',
-  translations: {
-    error: {
-      404: {
-        statusCode: '404',
-        title: '404 - Página no encontrada',
-        message:
-          'Es posible que haya escrito la dirección en forma incorrecta. Por favor compruebe que la dirección es correcta.',
-        solutions: [
-          'Double checking the url',
-          'Hitting the refresh button in your browser',
-          'Searching for this page using the BBC search bar',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'BBC Mundo Inicio',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/mundo',
-      },
-      500: {
-        statusCode: '500',
-        title: '500 - Error',
-        message: 'Ha ocurrido un error, por favor actualice la página',
-        solutions: [
-          'Hitting the refresh button in your browser',
-          'Coming back again later',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'BBC Mundo Inicio',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/mundo',
-      },
+export const service = {
+  default: {
+    lang: `es`,
+    articleAuthor: `https://www.facebook.com/bbcnews`,
+    articleTimestampPrefix: 'Actualización',
+    atiAnalyticsAppName: 'news-mundo',
+    atiAnalyticsProducerId: '62',
+    brandName: 'BBC News Mundo',
+    product: 'BBC News',
+    serviceLocalizedName: 'Mundo',
+    defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/mundo.png',
+    defaultImageAltText: 'BBC News Mundo',
+    dir: `ltr`,
+    externalLinkText: ', externo',
+    imageCaptionOffscreenText: 'Pie de foto, ',
+    videoCaptionOffscreenText: 'Título del video, ',
+    audioCaptionOffscreenText: 'Título del audio',
+    defaultCaptionOffscreenText: 'Título, ',
+    imageCopyrightOffscreenText: 'Fuente de la imagen, ',
+    locale: `es-005`,
+    datetimeLocale: `es`,
+    service: 'mundo',
+    serviceName: 'News Mundo',
+    themeColor: `${C_POSTBOX}`,
+    twitterCreator: '@bbcmundo',
+    twitterSite: '@bbcmundo',
+    noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
+    publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
+    isTrustProjectParticipant: true,
+    script: latinDiacritics,
+    manifestPath: '/manifest.json',
+    swPath: '/sw.js',
+    frontPageTitle: 'Noticias',
+    theming: {
+      brandBackgroundColour: `${C_POSTBOX}`,
+      brandLogoColour: `${C_WHITE}`,
     },
-    consentBanner: {
-      privacy: {
-        title: "We've updated our Privacy and Cookies Policy",
-        description: {
-          uk: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
-          international: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
+    translations: {
+      seeAll: 'Ver todo',
+      home: 'Página de inicio',
+      currentPage: 'Página actual',
+      skipLinkText: 'Ir al contenido',
+      relatedContent: 'Contenido relacionado',
+      mediaAssetPage: {
+        mediaPlayer: 'Reproductor multimedia',
+        audioPlayer: 'Reproductor de audio',
+        videoPlayer: 'Reproductor de video',
+      },
+      error: {
+        404: {
+          statusCode: '404',
+          title: 'Página no encontrada',
+          message:
+            'Lo sentimos, no podemos llevarte a la página que buscas. Por favor, intenta lo siguiente:',
+          solutions: [
+            'Revisa la dirección URL',
+            'Presiona el botón de actualizar en tu navegador',
+            'Buscando esta página a través de la barra de búsqueda de la BBC',
+          ],
+          callToActionFirst: 'Como alternativa, por favor visita la ',
+          callToActionLinkText: 'portada de BBC News Mundo',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/mundo',
         },
-        accept: 'OK',
-        reject: "Find out what's changed",
-        rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
-      },
-      cookie: {
-        title: 'Let us know you agree to cookies',
-        description: {
-          uk: {
-            first: 'We use ',
-            linkText: 'cookies',
-            last:
-              ' to give you the best online experience. Please let us know if you agree to all of these cookies.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
-          international: {
-            first: 'We and our partners use technologies, such as ',
-            linkText: 'cookies',
-            last:
-              ', and collect browsing data to give you the best online experience and to personalise the content and advertising shown to you. Please let us know if you agree.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
+        500: {
+          statusCode: '500',
+          title: 'Error interno del servidor',
+          message:
+            'Lo sentimos, actualmente no somos capaces de llevarte a la página que buscas. Por favor, intenta:',
+          solutions: [
+            'Presiona el botón de actualizar en tu navegador',
+            'Inténtalo más tarde',
+          ],
+          callToActionFirst: 'Como alternativa, por favor visita la ',
+          callToActionLinkText: 'portada de BBC News Mundo',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/mundo',
         },
-        accept: 'Yes, I agree',
-        reject: 'No, take me to settings',
-        rejectUrl:
-          'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+      },
+      consentBanner: {
+        privacy: {
+          title: 'Hemos actualizado nuestra Política de Privacidad y Cookies',
+          description: {
+            uk: {
+              first:
+                'Hemos realizado cambios importantes en nuestra Política de Privacidad y Cookies y queremos que sepas lo que esto significa para ti y tus datos.',
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+            international: {
+              first:
+                'Hemos realizado cambios importantes en nuestra Política de Privacidad y Cookies y queremos que sepas lo que esto significa para ti y tus datos.',
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+          },
+          accept: 'Ok',
+          reject: 'Descubre lo que ha cambiado',
+          rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
+        },
+        cookie: {
+          title: 'Déjanos saber si aceptas las cookies',
+          description: {
+            uk: {
+              first: 'Usamos ',
+              linkText: 'cookies',
+              last:
+                ' para ofrecerte la mejor experiencia online. Déjanos saber si aceptas todas estas cookies.',
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+            international: {
+              first: 'Nosotros y nuestros socios usamos tecnologías, como las ',
+              linkText: 'cookies',
+              last:
+                ', y recogemos datos de búsqueda para ofrecerte la mejor experiencia online y personalizar el contenido y la publicidad que se te muestra. Por favor, déjanos saber si estás de acuerdo.',
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+          },
+          accept: 'Sí, estoy de acuerdo',
+          reject: 'No, llévame a los ajustes',
+          rejectUrl:
+            'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+        },
+      },
+      media: {
+        audio: 'Audio',
+        photogallery: 'Galería de fotos',
+        video: 'Video',
       },
     },
-    media: {
-      audio: 'Audio',
-      photogallery: 'Fotos',
-      video: 'Video',
+    brandSVG,
+    mostRead: {
+      header: 'Más leídas',
+      lastUpdated: 'Última actualización: ',
     },
-  },
-  brandSVG,
-  footer: {
-    externalLink: {
-      href: 'https://www.bbc.co.uk/help/web/links/',
-      text: 'Read about our approach to external linking.',
-    },
-    links: [
-      {
+    footer: {
+      trustProjectLink: {
         href: 'https://www.bbc.com/news/help-41670342',
-        text: 'Why you can trust the BBC',
+        text: 'Por qué puedes confiar en la BBC',
+      },
+      externalLink: {
+        href: 'https://www.bbc.co.uk/help/web/links/',
+        text: 'Lee sobre nuestra postura acerca de enlaces externos.',
+      },
+      links: [
+        {
+          href: 'https://www.bbc.com/terms',
+          text: 'Términos de uso',
+        },
+        {
+          href: 'https://www.bbc.com/privacy/',
+          text: 'Política de privacidad',
+        },
+        {
+          href: 'https://www.bbc.com/usingthebbc/cookies/',
+          text: 'Cookies',
+        },
+        {
+          href: 'https://www.bbc.com/contact/',
+          text: 'Contacta a la BBC',
+        },
+      ],
+      copyrightText:
+        'BBC. La BBC no se hace responsable del contenido de sitios externos.',
+    },
+    fonts: [
+      F_REITH_SANS_BOLD,
+      F_REITH_SANS_BOLD_ITALIC,
+      F_REITH_SANS_ITALIC,
+      F_REITH_SANS_REGULAR,
+      F_REITH_SERIF_MEDIUM,
+      F_REITH_SERIF_MEDIUM_ITALIC,
+    ],
+    timezone: 'GMT',
+    navigation: [
+      {
+        title: 'Noticias',
+        url: '/mundo',
       },
       {
-        href: 'https://www.bbc.com/terms',
-        text: 'Terms of Use',
+        title: 'Hay Festival',
+        url: '/mundo/noticias-36795069',
       },
       {
-        href: 'https://www.bbc.co.uk/aboutthebbc/',
-        text: 'About the BBC',
+        title: 'América Latina',
+        url: '/mundo/america_latina',
       },
       {
-        href: 'https://www.bbc.com/privacy/',
-        text: 'Privacy Policy',
+        title: 'Internacional',
+        url: '/mundo/internacional',
       },
       {
-        href: 'https://www.bbc.com/usingthebbc/cookies/',
-        text: 'Cookies',
+        title: 'Economía',
+        url: '/mundo/topics/ca170ae3-99c1-48db-9b67-2866f85e7342',
       },
       {
-        href: 'https://www.bbc.com/accessibility/',
-        text: 'Accessibility Help',
+        title: 'Tecnología',
+        url: '/mundo/topics/31684f19-84d6-41f6-b033-7ae08098572a',
       },
       {
-        href: 'https://www.bbc.com/contact/',
-        text: 'Contact the BBC',
+        title: 'Ciencia',
+        url: '/mundo/topics/0f469e6a-d4a6-46f2-b727-2bd039cb6b53',
+      },
+      {
+        title: 'Salud',
+        url: '/mundo/topics/c4794229-7f87-43ce-ac0a-6cfcd6d3cef2',
+      },
+      {
+        title: 'Cultura',
+        url: '/mundo/topics/6a73afa3-ea6b-45c1-80bb-49060b99f864',
+      },
+      {
+        title: 'Deportes',
+        url: '/mundo/topics/4063f80f-cccc-44c8-9449-5ca44e4c8592',
+      },
+      {
+        title: 'Video',
+        url: '/mundo/media/video',
+      },
+      {
+        title: 'Centroamérica Cuenta',
+        url: '/mundo/noticias-43826245',
       },
     ],
-    copyrightText:
-      'El contenido de las páginas externas no es responsabilidad de la BBC.',
   },
-  fonts: [],
 };
 
-export default service;
+export default withContext(service);

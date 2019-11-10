@@ -1,4 +1,4 @@
-import { setWindowValue, resetWindowValue } from '../../../../testHelpers';
+import { setWindowValue, resetWindowValue } from '@bbc/psammead-test-helpers';
 
 const windowLocation = window.location;
 
@@ -57,6 +57,7 @@ describe('getOriginContext - localhost', () => {
 
   beforeEach(() => {
     process.env.APP_ENV = 'local';
+    process.env.SIMORGH_BASE_URL = 'http://localhost:7080';
   });
 
   const localScenarios = [
@@ -65,7 +66,7 @@ describe('getOriginContext - localhost', () => {
       bbcOrigin: undefined,
       expected: {
         isUK: true,
-        origin: 'https://www.test.bbc.co.uk',
+        origin: 'http://localhost:7080',
       },
     },
     {

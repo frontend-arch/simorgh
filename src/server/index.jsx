@@ -5,28 +5,36 @@ import path from 'path';
 // not part of react-helmet
 import helmet from 'helmet';
 import gnuTP from 'gnu-terry-pratchett';
-import routes from '../app/routes';
+import routes from '#app/routes';
 import {
-  articleRegexPath,
   articleDataRegexPath,
   articleManifestRegexPath,
   articleSwRegexPath,
-  frontpageRegexPath,
   frontpageDataRegexPath,
   frontpageManifestRegexPath,
   frontpageSwRegexPath,
+  cpsAssetPageDataRegexPath,
+  mostReadDataRegexPath,
+  radioAndTvDataRegexPath,
 } from '../app/routes/regex';
-import nodeLogger from '../app/lib/logger.node';
+import nodeLogger from '#lib/logger.node';
 import renderDocument from './Document';
-import getRouteProps from '../app/routes/getInitialData/utils/getRouteProps';
-import getDials from './getDials';
+import getRouteProps from '#app/routes/getInitialData/utils/getRouteProps';
 import logResponseTime from './utilities/logResponseTime';
+import injectCspHeader, {
+  localInjectHostCspHeader,
+} from './utilities/constructCspHeader';
+
+const fs = require('fs');
 
 const morgan = require('morgan');
 
 const logger = nodeLogger(__filename);
 
 const publicDirectory = 'build/public';
+
+const cspInjectFun =
+  process.env.APP_ENV === 'local' ? localInjectHostCspHeader : injectCspHeader;
 
 logger.debug(
   `Application outputting logs to directory "${process.env.LOG_DIR}"`,
@@ -39,8 +47,11 @@ class LoggerStream {
   }
 }
 
-const constructDataFilePath = (pageType, service, id) => {
-  const dataPath = pageType === 'frontpage' ? 'index.json' : `${id}.json`;
+const constructDataFilePath = ({ pageType, service, id, variant = '' }) => {
+  const dataPath =
+    pageType === 'frontpage' || pageType === 'mostRead'
+      ? `${variant || 'index'}.json`
+      : `${id}${variant}.json`;
 
   return path.join(process.cwd(), 'data', service, pageType, dataPath);
 };
@@ -50,6 +61,11 @@ const server = express();
 /*
  * Default headers, compression, logging, status route
  */
+
+const getBuildMetadata = () => {
+  const { buildMetadata } = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+  return buildMetadata;
+};
 
 server
   .disable('x-powered-by')
@@ -63,7 +79,7 @@ server
   .use(helmet({ frameguard: { action: 'deny' } }))
   .use(gnuTP())
   .get('/status', (req, res) => {
-    res.sendStatus(200);
+    res.status(200).send(getBuildMetadata());
   });
 
 /*
@@ -76,17 +92,16 @@ if (process.env.APP_ENV !== 'local') {
 /*
  * Local env routes - fixture data
  */
+const sendDataFile = (res, dataFilePath, next) => {
+  res.sendFile(dataFilePath, {}, sendErr => {
+    if (sendErr) {
+      logger.error(sendErr);
+      next(sendErr);
+    }
+  });
+};
 
 if (process.env.APP_ENV === 'local') {
-  const sendDataFile = (res, dataFilePath, next) => {
-    res.sendFile(dataFilePath, {}, sendErr => {
-      if (sendErr) {
-        logger.error(sendErr);
-        next(sendErr);
-      }
-    });
-  };
-
   server
     .use((req, res, next) => {
       if (req.url.substr(-1) === '/' && req.url.length > 1)
@@ -101,16 +116,60 @@ if (process.env.APP_ENV === 'local') {
       }),
     )
     .get(articleDataRegexPath, async ({ params }, res, next) => {
-      const { service, id } = params;
+      const { service, id, variant } = params;
 
-      const dataFilePath = constructDataFilePath('articles', service, id);
+      const dataFilePath = constructDataFilePath({
+        pageType: 'articles',
+        service,
+        id,
+        variant,
+      });
 
       sendDataFile(res, dataFilePath, next);
     })
     .get(frontpageDataRegexPath, async ({ params }, res, next) => {
-      const { service } = params;
+      const { service, variant } = params;
 
-      const dataFilePath = constructDataFilePath('frontpage', service);
+      const dataFilePath = constructDataFilePath({
+        pageType: 'frontpage',
+        service,
+        variant,
+      });
+
+      sendDataFile(res, dataFilePath, next);
+    })
+    .get(mostReadDataRegexPath, async ({ params }, res, next) => {
+      const { service, variant } = params;
+      const dataFilePath = constructDataFilePath({
+        pageType: 'mostRead',
+        service,
+        variant,
+      });
+
+      sendDataFile(res, dataFilePath, next);
+    })
+    .get(radioAndTvDataRegexPath, async ({ params }, res, next) => {
+      const { service, serviceId, mediaId } = params;
+
+      const dataFilePath = path.join(
+        process.cwd(),
+        'data',
+        service,
+        serviceId,
+        mediaId,
+      );
+
+      sendDataFile(res, `${dataFilePath}.json`, next);
+    })
+    .get(cpsAssetPageDataRegexPath, async ({ params }, res, next) => {
+      const { service, assetUri: id, variant } = params;
+
+      const dataFilePath = constructDataFilePath({
+        pageType: 'cpsAssets',
+        service,
+        id,
+        variant,
+      });
 
       sendDataFile(res, dataFilePath, next);
     })
@@ -148,40 +207,34 @@ server
       });
     },
   )
-  .get(
-    [articleRegexPath, frontpageRegexPath],
-    async ({ url, headers }, res) => {
-      try {
-        const { service, isAmp, route, match } = getRouteProps(routes, url);
-        const data = await route.getInitialData(match.params);
-        const { status } = data;
-        const bbcOrigin = headers['bbc-origin'];
+  .get('/*', cspInjectFun, async ({ url, headers, path: urlPath }, res) => {
+    try {
+      const { service, isAmp, route, variant } = getRouteProps(routes, url);
+      const data = await route.getInitialData(urlPath);
+      const { status } = data;
+      const bbcOrigin = headers['bbc-origin'];
 
-        let dials = {};
-        try {
-          dials = await getDials();
-        } catch ({ message }) {
-          logger.error(`Error fetching Cosmos dials: ${message}`);
-        }
-        // Preserve initial dial state in window so it is available during hydration
-        data.dials = dials;
+      // Temp log to test upstream change
+      logger.info(`Country code: ${headers['bbc-country'] || 'unknown!'}`);
 
-        res.status(status).send(
-          await renderDocument({
-            bbcOrigin,
-            data,
-            isAmp,
-            routes,
-            service,
-            url,
-          }),
-        );
-      } catch ({ message, status }) {
-        // Return an internal server error for any uncaught errors
-        logger.error(`status: ${status || 500} - ${message}`);
-        res.status(500).send(message);
-      }
-    },
-  );
+      data.path = urlPath;
+
+      res.status(status).send(
+        await renderDocument({
+          bbcOrigin,
+          data,
+          isAmp,
+          routes,
+          service,
+          url,
+          variant,
+        }),
+      );
+    } catch ({ message, status }) {
+      // Return an internal server error for any uncaught errors
+      logger.error(`status: ${status || 500} - ${message}`);
+      res.status(500).send(message);
+    }
+  });
 
 export default server;

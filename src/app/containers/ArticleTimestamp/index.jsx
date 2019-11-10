@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { number } from 'prop-types';
 import Timestamp from '@bbc/psammead-timestamp-container';
-import { PopOutGridItemMedium } from '../../lib/styledGrid';
-import { ServiceContext } from '../../contexts/ServiceContext';
+import { PopOutGridItemMedium } from '#lib/styledGrid';
+import { ServiceContext } from '#contexts/ServiceContext';
 import { formatDateNumeric } from './timeFormats';
 import {
   isFirstRelative,
@@ -17,6 +17,8 @@ const ArticleTimestamp = ({ firstPublished, lastPublished }) => {
     datetimeLocale,
     script,
     service,
+    timezone,
+    altCalendar,
   } = useContext(ServiceContext);
 
   if (!isValidDateTime(firstPublished) || !isValidDateTime(lastPublished)) {
@@ -27,8 +29,10 @@ const ArticleTimestamp = ({ firstPublished, lastPublished }) => {
     dateTimeFormat: formatDateNumeric,
     script,
     locale: datetimeLocale,
+    service,
+    timezone,
+    altCalendar,
   };
-
   const firstPublishedProps = {
     timestamp: firstPublished,
     format: formatType({ firstPublished }),
@@ -44,17 +48,9 @@ const ArticleTimestamp = ({ firstPublished, lastPublished }) => {
 
   return (
     <PopOutGridItemMedium>
-      <Timestamp
-        {...timestampProps}
-        {...firstPublishedProps}
-        service={service}
-      />
+      <Timestamp {...timestampProps} {...firstPublishedProps} />
       {firstPublished !== lastPublished && (
-        <Timestamp
-          {...timestampProps}
-          {...lastPublishedProps}
-          service={service}
-        />
+        <Timestamp {...timestampProps} {...lastPublishedProps} />
       )}
     </PopOutGridItemMedium>
   );

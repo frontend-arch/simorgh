@@ -1,14 +1,22 @@
-import { C_POSTBOX } from '@bbc/psammead-styles/colours';
-import { latin } from '@bbc/gel-foundations/scripts';
-import { news as brandSVG } from '@bbc/psammead-assets/svgs';
+import { C_POSTBOX, C_WHITE } from '@bbc/psammead-styles/colours';
+import {
+  latinDiacritics,
+  cyrillicAndLatin,
+} from '@bbc/gel-foundations/scripts';
+import { serbian as brandSVG } from '@bbc/psammead-assets/svgs';
+import '@bbc/moment-timezone-include/tz/GMT';
+import '@bbc/psammead-locales/moment/sr-cyrl';
+import '@bbc/psammead-locales/moment/sr';
+import withContext from '../../../contexts/utils/withContext';
 
-const service = {
-  lang: `sr-Latn`,
+const baseServiceConfig = {
   articleAuthor: `https://www.facebook.com/BBCNewsnasrpskom`,
   articleTimestampPrefix: 'Updated',
   atiAnalyticsAppName: 'news-serbian',
+  atiAnalyticsProducerId: '81',
   brandName: 'BBC News na srpskom',
-  product: 'BBC News na srpskom',
+  product: 'BBC News',
+  serviceLocalizedName: 'na srpskom',
   defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/serbian.png',
   defaultImageAltText: 'BBC News na srpskom',
   dir: `ltr`,
@@ -18,8 +26,6 @@ const service = {
   audioCaptionOffscreenText: 'Audio caption',
   defaultCaptionOffscreenText: 'Caption, ',
   imageCopyrightOffscreenText: 'Image source, ',
-  locale: `sr-Latn`,
-  datetimeLocale: `sr-Latn`.toLowerCase(),
   service: 'serbian',
   serviceName: 'News na srpskom',
   themeColor: `${C_POSTBOX}`,
@@ -27,10 +33,25 @@ const service = {
   twitterSite: '@bbcnasrpskom',
   noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
   publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
-  script: latin,
-  manifestPath: '/articles/manifest.json',
-  swPath: '/articles/sw.js',
+  isTrustProjectParticipant: true,
+  manifestPath: '/manifest.json',
+  swPath: '/sw.js',
+  frontPageTitle: 'Početna strana',
+  theming: {
+    brandBackgroundColour: `${C_POSTBOX}`,
+    brandLogoColour: `${C_WHITE}`,
+  },
   translations: {
+    seeAll: 'See all',
+    home: 'Home',
+    currentPage: 'Current page',
+    skipLinkText: 'Skip to content',
+    relatedContent: 'Related content',
+    mediaAssetPage: {
+      mediaPlayer: 'Media player',
+      audioPlayer: 'Audio player',
+      videoPlayer: 'Video player',
+    },
     error: {
       404: {
         statusCode: '404',
@@ -117,23 +138,23 @@ const service = {
     },
   },
   brandSVG,
+  mostRead: {
+    header: 'Most read',
+    lastUpdated: 'Last updated: ',
+  },
   footer: {
+    trustProjectLink: {
+      href: 'https://www.bbc.com/news/help-41670342',
+      text: 'Why you can trust the BBC',
+    },
     externalLink: {
       href: 'https://www.bbc.co.uk/help/web/links/',
       text: 'Read about our approach to external linking.',
     },
     links: [
       {
-        href: 'https://www.bbc.com/news/help-41670342',
-        text: 'Why you can trust the BBC',
-      },
-      {
         href: 'https://www.bbc.com/terms',
         text: 'Terms of Use',
-      },
-      {
-        href: 'https://www.bbc.co.uk/aboutthebbc/',
-        text: 'About the BBC',
       },
       {
         href: 'https://www.bbc.com/privacy/',
@@ -144,17 +165,84 @@ const service = {
         text: 'Cookies',
       },
       {
-        href: 'https://www.bbc.com/accessibility/',
-        text: 'Accessibility Help',
-      },
-      {
         href: 'https://www.bbc.com/contact/',
         text: 'Contact the BBC',
       },
     ],
-    copyrightText: 'BBC nije odgovoran za sadržaj sajtova sa spoljnih linkova',
+    copyrightText:
+      'BBC. BBC nije odgovoran za sadržaj sajtova sa spoljnih linkova',
   },
   fonts: [],
+  timezone: 'GMT',
 };
 
-export default service;
+export const service = {
+  lat: {
+    ...baseServiceConfig,
+    lang: `sr-latn`,
+    locale: `sr-latn`,
+    script: latinDiacritics,
+    datetimeLocale: `sr`,
+    navigation: [
+      {
+        title: 'Početna strana',
+        url: '/serbian/lat',
+      },
+      {
+        title: 'Srbija',
+        url: '/serbian/lat/1791445f-977a-4e6d-b490-51f84bb4fc52',
+      },
+      {
+        title: 'Balkan',
+        url: '/serbian/lat/balkan',
+      },
+      {
+        title: 'Svet',
+        url: '/serbian/lat/svet',
+      },
+      {
+        title: 'Video',
+        url: '/serbian/lat/media/video',
+      },
+      {
+        title: 'Najpopularnije',
+        url: '/serbian/lat/popular/read',
+      },
+    ],
+  },
+  cyr: {
+    ...baseServiceConfig,
+    lang: `sr-cyrl`,
+    locale: `sr-cyrl`,
+    script: cyrillicAndLatin,
+    datetimeLocale: `sr-cyrl`,
+    navigation: [
+      {
+        title: 'Почетна страна',
+        url: '/serbian/cyr',
+      },
+      {
+        title: 'Србија',
+        url: '/serbian/cyr/1791445f-977a-4e6d-b490-51f84bb4fc52',
+      },
+      {
+        title: 'Балкан',
+        url: '/serbian/cyr/balkan',
+      },
+      {
+        title: 'Свет',
+        url: '/serbian/cyr/svet',
+      },
+      {
+        title: 'Видео',
+        url: '/serbian/cyr/media/video',
+      },
+      {
+        title: 'Најпопуларније',
+        url: '/serbian/cyr/popular/read',
+      },
+    ],
+  },
+};
+
+export default withContext(service);

@@ -1,161 +1,236 @@
-import { C_POSTBOX } from '@bbc/psammead-styles/colours';
-import { latin } from '@bbc/gel-foundations/scripts';
-import { news as brandSVG } from '@bbc/psammead-assets/svgs';
+import { C_POSTBOX, C_WHITE } from '@bbc/psammead-styles/colours';
+import { latinDiacritics } from '@bbc/gel-foundations/scripts';
+import {
+  F_REITH_SANS_BOLD,
+  F_REITH_SANS_BOLD_ITALIC,
+  F_REITH_SANS_ITALIC,
+  F_REITH_SANS_REGULAR,
+  F_REITH_SERIF_MEDIUM,
+  F_REITH_SERIF_MEDIUM_ITALIC,
+} from '@bbc/psammead-styles/fonts';
+import { cymrufyw as brandSVG } from '@bbc/psammead-assets/svgs';
+import '@bbc/moment-timezone-include/tz/Europe/London';
+import withContext from '../../../contexts/utils/withContext';
+import 'moment/locale/cy';
 
-const service = {
-  lang: `cy`,
-  articleAuthor: `https://www.facebook.com/BBCCymruFyw`,
-  articleTimestampPrefix: 'Updated',
-  atiAnalyticsAppName: 'news-cymrufyw',
-  brandName: 'BBC Cymru Fyw',
-  product: 'BBC Cymru Fyw',
-  defaultImage:
-    'https://www.bbc.co.uk/news/special/2015/newsspec_11063/cymru_fyw_1024x576.png',
-  defaultImageAltText: 'BBC Cymru Fyw',
-  dir: `ltr`,
-  externalLinkText: ', external',
-  imageCaptionOffscreenText: 'Image caption, ',
-  videoCaptionOffscreenText: 'Video caption, ',
-  audioCaptionOffscreenText: 'Audio caption',
-  defaultCaptionOffscreenText: 'Caption, ',
-  imageCopyrightOffscreenText: 'Image source, ',
-  locale: `cy`,
-  datetimeLocale: `cy`.toLowerCase(),
-  service: 'cymrufyw',
-  serviceName: 'Cymru Fyw',
-  themeColor: `${C_POSTBOX}`,
-  twitterCreator: '@BBCCymruFyw',
-  twitterSite: '@BBCCymruFyw',
-  noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
-  publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
-  script: latin,
-  manifestPath: '/articles/manifest.json',
-  swPath: '/articles/sw.js',
-  translations: {
-    error: {
-      404: {
-        statusCode: '404',
-        title: "404 - Methu dod o hyd I'r dudalen",
-        message:
-          "Efallai bod hyn oherwydd i chi deipio cyfeiriad y wefan yn anghywir. Gwirwch y cyfeiriad a'r sillafu",
-        solutions: [
-          'Double checking the url',
-          'Hitting the refresh button in your browser',
-          'Searching for this page using the BBC search bar',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'Hafan BBC News',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/cymrufyw',
-      },
-      500: {
-        statusCode: '500',
-        title: '500 - Gwall',
-        message: 'Roedd gwall. Adnewyddwch y dudalen',
-        solutions: [
-          'Hitting the refresh button in your browser',
-          'Coming back again later',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'Hafan BBC News',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/cymrufyw',
-      },
+export const service = {
+  default: {
+    lang: `cy`,
+    articleAuthor: `https://www.facebook.com/bbcnews`,
+    articleTimestampPrefix: 'Wedi ei ddiweddaru',
+    atiAnalyticsAppName: 'news-cymrufyw',
+    atiAnalyticsProducerId: '100',
+    brandName: 'BBC Cymru Fyw',
+    product: 'BBC News',
+    serviceLocalizedName: 'Cymru Fyw',
+    defaultImage:
+      'https://www.bbc.co.uk/news/special/2015/newsspec_11063/cymru_fyw_1024x576.png',
+    defaultImageAltText: 'BBC Cymru Fyw',
+    dir: `ltr`,
+    externalLinkText: ', dolen allanol',
+    imageCaptionOffscreenText: "Disgrifiad o'r llun, ",
+    videoCaptionOffscreenText: "Disgrifiad o'r fideo, ",
+    audioCaptionOffscreenText: "Disgrifiad o'r sain",
+    defaultCaptionOffscreenText: 'Disgrifiad, ',
+    imageCopyrightOffscreenText: 'Ffynhonnell y llun, ',
+    locale: `cy`,
+    datetimeLocale: `cy`,
+    service: 'cymrufyw',
+    serviceName: 'Cymru Fyw',
+    themeColor: `${C_POSTBOX}`,
+    twitterCreator: '@BBCCymruFyw',
+    twitterSite: '@BBCCymruFyw',
+    noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
+    publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
+    isTrustProjectParticipant: true,
+    script: latinDiacritics,
+    manifestPath: '/articles/manifest.json',
+    swPath: '/articles/sw.js',
+    frontPageTitle: 'Newyddion a mwy',
+    theming: {
+      brandBackgroundColour: `${C_POSTBOX}`,
+      brandLogoColour: `${C_WHITE}`,
     },
-    consentBanner: {
-      privacy: {
-        title: "We've updated our Privacy and Cookies Policy",
-        description: {
-          uk: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
-          international: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
+    translations: {
+      seeAll: 'Gweld y cyfan',
+      home: 'Hafan',
+      currentPage: 'Y dudalen bresennol',
+      skipLinkText: `Neidio i'r cynnwys`,
+      relatedContent: 'Cynnwys perthnasol',
+      mediaAssetPage: {
+        mediaPlayer: 'Media player',
+        audioPlayer: 'Audio player',
+        videoPlayer: 'Video player',
+      },
+      error: {
+        404: {
+          statusCode: '404',
+          title: "Methu dod o hyd i'r dudalen",
+          message:
+            "Yn anffodus, rydyn ni'n methu dangos y dudalen yma. Rhowch gynnig ar:",
+          solutions: [
+            'Gwirio cyfeiriad url eto',
+            "Ail-lwytho'r dudalen yn eich porwr",
+            "Chwilioam y dudalen gan ddefnyddio blwch chwilio'r BBC",
+          ],
+          callToActionFirst: 'Neu, ewch i ',
+          callToActionLinkText: 'Hafan BBC Cymru Fyw',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/cymrufyw',
         },
-        accept: 'OK',
-        reject: "Find out what's changed",
-        rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
-      },
-      cookie: {
-        title: 'Let us know you agree to cookies',
-        description: {
-          uk: {
-            first: 'We use ',
-            linkText: 'cookies',
-            last:
-              ' to give you the best online experience. Please let us know if you agree to all of these cookies.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
-          international: {
-            first: 'We and our partners use technologies, such as ',
-            linkText: 'cookies',
-            last:
-              ', and collect browsing data to give you the best online experience and to personalise the content and advertising shown to you. Please let us know if you agree.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
+        500: {
+          statusCode: '500',
+          title: 'Gwall mewnol',
+          message: "Ry'n ni'n methu dod o hyd i'r dudalen. Rhowch gynnig ar:",
+          solutions: [
+            "Ail-lwytho'r dudalen yn eich porwr",
+            'Rhowch gynnig arall arni nes ymlaen',
+          ],
+          callToActionFirst: 'Neu, ewch i ',
+          callToActionLinkText: 'Hafan BBC Cymru Fyw',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/cymrufyw',
         },
-        accept: 'Yes, I agree',
-        reject: 'No, take me to settings',
-        rejectUrl:
-          'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+      },
+      consentBanner: {
+        privacy: {
+          title: 'Rydyn ni wedi diweddaru ein Polisi Preifatrwydd a Chwcis',
+          description: {
+            uk: {
+              first:
+                "Rydyn ni wedi gwneud newidiadau pwysig i'n Polisi Preifatrwydd a Chwcis ac rydyn ni eisiau i chi wybod beth all hyn ei olygu i chi a'ch data.",
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+            international: {
+              first:
+                "Rydyn ni wedi gwneud newidiadau pwysig i'n Polisi Preifatrwydd a Chwcis ac rydyn ni eisiau i chi wybod beth all hyn ei olygu i chi a'ch data.",
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+          },
+          accept: 'Iawn',
+          reject: 'Beth sydd wedi newid',
+          rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters/cy',
+        },
+        cookie: {
+          title: "Rhowch wybod eich bod yn cytuno i'r cwcis",
+          description: {
+            uk: {
+              first: "Rydyn ni'n defnyddio ",
+              linkText: 'cwcis',
+              last:
+                " i roi'r profiad ar-lein gorau posib i chi. Gadewch i ni wybod os ydych chi'n cytuno i'r cwcis yma",
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/cy/',
+            },
+            international: {
+              first:
+                "Rydyn ni a'n partneriaid yn defnyddio dyfeisiau technolegol, fel ",
+              linkText: 'cwcis',
+              last:
+                ", ac yn casglu data pori er mwyn rhoi'r profiad ar-lein gorau posib i chi, ac er mwyn personoleiddio’r cynnwys a'r hysbysebion sy’n cael eu cynnig i chi. Rhowch wybod os ydych yn cytuno.",
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/cy/',
+            },
+          },
+          accept: 'Cytuno',
+          reject: "Na, mynd i'r gosodiadau",
+          rejectUrl:
+            'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/cy/',
+        },
+      },
+      media: {
+        audio: 'Sain',
+        photogallery: 'Oriel luniau',
+        video: 'Fideo',
       },
     },
-    media: {
-      audio: 'Sain',
-      photogallery: 'Oriel luniau',
-      video: 'Fideo',
+    brandSVG,
+    mostRead: {
+      header: 'Mwyaf poblogaidd',
+      lastUpdated: 'Diweddariad diwethaf: ',
     },
-  },
-  brandSVG,
-  footer: {
-    externalLink: {
-      href: 'https://www.bbc.co.uk/help/web/links/',
-      text: 'Read about our approach to external linking.',
-    },
-    links: [
-      {
+    footer: {
+      trustProjectLink: {
         href: 'https://www.bbc.com/news/help-41670342',
-        text: 'Why you can trust the BBC',
+        text: 'Pam y gallwch ymddiried yn BBC Cymru Fyw',
+      },
+      externalLink: {
+        href: 'https://www.bbc.co.uk/help/web/links/',
+        text: "Sut ry'n ni'n defnyddio dolenni allanol.",
+      },
+      links: [
+        {
+          href: 'https://www.bbc.com/usingthebbc/terms/cy/',
+          text: 'Telerau Defnyddio',
+        },
+        {
+          href: 'https://www.bbc.com/usingthebbc/privacy/cy/',
+          text: 'Polisi Preifatrwydd',
+        },
+        {
+          href: 'https://www.bbc.com/usingthebbc/cookies/cy/',
+          text: 'Cwcis',
+        },
+        {
+          href: 'https://www.bbc.com/contact/',
+          text: "Cysylltwch â'r BBC",
+        },
+      ],
+      copyrightText:
+        "BBC. Nid yw'r BBC yn gyfrifol am gynnwys safleoedd allanol.",
+    },
+    fonts: [
+      F_REITH_SANS_BOLD,
+      F_REITH_SANS_BOLD_ITALIC,
+      F_REITH_SANS_ITALIC,
+      F_REITH_SANS_REGULAR,
+      F_REITH_SERIF_MEDIUM,
+      F_REITH_SERIF_MEDIUM_ITALIC,
+    ],
+    timezone: 'Europe/London',
+    navigation: [
+      {
+        title: 'Hafan',
+        url: '/cymrufyw',
       },
       {
-        href: 'https://www.bbc.com/terms',
-        text: 'Terms of Use',
+        title: 'Cylchgrawn',
+        url: '/cymrufyw/cylchgrawn',
       },
       {
-        href: 'https://www.bbc.co.uk/aboutthebbc/',
-        text: 'About the BBC',
+        title: 'Gwleidyddiaeth',
+        url: '/cymrufyw/gwleidyddiaeth',
       },
       {
-        href: 'https://www.bbc.com/privacy/',
-        text: 'Privacy Policy',
+        title: 'Gog-Orll',
+        url: '/cymrufyw/gogledd-orllewin',
       },
       {
-        href: 'https://www.bbc.com/usingthebbc/cookies/',
-        text: 'Cookies',
+        title: 'Gog-Ddwy',
+        url: '/cymrufyw/gogledd-ddwyrain',
       },
       {
-        href: 'https://www.bbc.com/accessibility/',
-        text: 'Accessibility Help',
+        title: 'Canolbarth',
+        url: '/cymrufyw/canolbarth',
       },
       {
-        href: 'https://www.bbc.com/contact/',
-        text: 'Contact the BBC',
+        title: 'De-Orll',
+        url: '/cymrufyw/de-orllewin',
+      },
+      {
+        title: 'De-Ddwy',
+        url: '/cymrufyw/de-ddwyrain',
+      },
+      {
+        title: 'Wales News',
+        url: '/news/wales',
       },
     ],
-    copyrightText: "Dyw'r BBC ddim yn gyfrifol am safleoedd rhyngrwyd allanol.",
   },
-  fonts: [],
 };
 
-export default service;
+export default withContext(service);

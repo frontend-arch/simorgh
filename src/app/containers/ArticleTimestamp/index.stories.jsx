@@ -1,9 +1,10 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import WithTimeMachine from '../../../testHelpers/withTimeMachine';
 import ArticleTimestamp from '.';
 import { timestampGenerator } from './testHelpers';
-import { ServiceContextProvider } from '../../contexts/ServiceContext';
-import services from '../../lib/config/services';
+import { ServiceContextProvider } from '#contexts/ServiceContext';
+import services from '#server/utilities/serviceConfigs';
 
 const threeHoursAgo = timestampGenerator({ hours: 3 });
 const fiveHoursAgo = timestampGenerator({ hours: 5 });
@@ -23,7 +24,9 @@ const WrappedArticleTimestamp = ({ service, ...rest }) => (
   </ServiceContextProvider>
 );
 
-const stories = storiesOf('ArticleTimestamp', module);
+const stories = storiesOf('Containers|Article/Article Timestamp', module)
+  .addDecorator(story => <WithTimeMachine>{story()}</WithTimeMachine>)
+  .addParameters({ chromatic: { disable: true } });
 
 stories.add('default', () => (
   <WrappedArticleTimestamp
@@ -82,7 +85,7 @@ stories
     ),
   )
   .add(
-    'lastPublished today > 10 hours ago and firstPublished today > 10 hours ago',
+    'lastPublished today more than 10 hours ago and firstPublished today more than 10 hours ago',
     () => (
       <WrappedArticleTimestamp
         firstPublished={twelveHoursAgo}
@@ -109,7 +112,7 @@ stories
     ),
   )
   .add(
-    'lastPublished today and > 10 hours and firstPublished before today',
+    'lastPublished today and more than 10 hours ago and firstPublished before today',
     () => (
       <WrappedArticleTimestamp
         firstPublished={threeDaysAgo}

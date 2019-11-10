@@ -1,6 +1,6 @@
 import Cookie from 'js-cookie';
+import { setWindowValue, resetWindowValue } from '@bbc/psammead-test-helpers';
 import onClient from '../utilities/onClient';
-import { setWindowValue, resetWindowValue } from '../../../testHelpers';
 
 let isOnClient = true;
 
@@ -17,7 +17,11 @@ const {
   getHref,
   getReferrer,
   getPublishedDatetime,
+  getAtUserId,
   sanitise,
+  getProducer,
+  getAtiUrl,
+  getClickInfo,
 } = require('./index');
 
 let locServeCookieValue;
@@ -69,6 +73,16 @@ describe('getDestination', () => {
       statsDestination: 'WS_NEWS_LANGUAGES_TEST',
       expected: 598343,
       summary: 'should return for test WS',
+    },
+    {
+      statsDestination: 'PLACEHOLDER',
+      expected: 598295,
+      summary: 'should return for live Scotland',
+    },
+    {
+      statsDestination: 'PLACEHOLDER_TEST',
+      expected: 598297,
+      summary: 'should return for test Scotland',
     },
     {
       statsDestination: undefined,
@@ -348,7 +362,7 @@ describe('getPublishedDatetime', () => {
   const data = {
     metadata: {
       firstPublished: 946688461000,
-      seconds: 1504785600,
+      seconds: 1504785600000,
       invalidDate: 'foobar',
     },
   };
@@ -375,5 +389,98 @@ describe('getPublishedDatetime', () => {
     const publishedTime = getPublishedDatetime('invalidDate', data);
 
     expect(publishedTime).toEqual(null);
+  });
+});
+
+describe('getProducer', () => {
+  it('should return a number', () => {
+    expect(typeof Number(getProducer('news'))).toEqual('number');
+  });
+});
+
+describe('getAtiUrl', () => {
+  it('should return url', () => {
+    const data = [
+      {
+        key: 'a',
+        value: 'a1',
+        wrap: false,
+      },
+      {
+        key: 'b',
+        value: 'b1',
+        wrap: true,
+      },
+      {
+        key: 'c',
+        value: 'c1',
+        wrap: false,
+      },
+    ];
+    expect(getAtiUrl(data)).toEqual('a=a1&b=[b1]&c=c1');
+  });
+
+  it('should return empty string', () => {
+    const data = [];
+    expect(getAtiUrl(data)).toEqual('');
+  });
+});
+
+describe('getClickInfo', () => {
+  const params = {
+    service: 'service',
+    component: 'component',
+    label: 'label',
+    type: 'type',
+  };
+
+  it('should return url section', () => {
+    expect(getClickInfo({}, params)).toEqual(
+      'PUB-[service-component]-[=type]-[label]-[PAR=container-component::name~CHD=brand-top]-[]-[]-[]-[/]',
+    );
+  });
+
+  it('should include elem.dataset.info in output', () => {
+    expect(
+      getClickInfo(
+        {
+          dataset: {
+            info: 'data-info-attr',
+          },
+        },
+        params,
+      ),
+    ).toContain('data-info-attr');
+  });
+
+  it('should include elem.href in output', () => {
+    expect(
+      getClickInfo(
+        {
+          href: 'http://foobar.com',
+        },
+        params,
+      ),
+    ).toContain('[http://foobar.com]');
+  });
+});
+
+describe('getAtUserId', () => {
+  returnsNullWhenOffClient(getAtUserId);
+
+  it('should return AT user id when found', () => {
+    Cookie.getJSON = jest.fn().mockReturnValue({ val: 'uuid' });
+    const id = getAtUserId();
+    expect(id).toEqual('uuid');
+  });
+
+  it('should return null if AT user id not found', () => {
+    Cookie.getJSON = jest.fn().mockReturnValue(null);
+    let id = getAtUserId();
+    expect(id).toBeNull();
+
+    Cookie.getJSON = jest.fn().mockReturnValue({});
+    id = getAtUserId();
+    expect(id).toBeNull();
   });
 });

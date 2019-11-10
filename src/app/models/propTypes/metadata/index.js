@@ -8,6 +8,24 @@ import {
   string,
 } from 'prop-types';
 
+export const mediaMetadataPropTypes = {
+  analyticsLabels: shape({
+    pageIdentifier: string.isRequired,
+    pageTitle: string.isRequired,
+  }),
+  blockTypes: arrayOf(string),
+  createdBy: string,
+  firstPublished: number,
+  id: string.isRequired,
+  language: string.isRequired,
+  lastPublished: number,
+  lastUpdated: number,
+  locators: objectOf(any),
+  options: objectOf(any),
+  tags: objectOf(any),
+  type: string,
+};
+
 export const optimoMetadataPropTypes = {
   id: string.isRequired,
   type: string.isRequired,
@@ -43,7 +61,7 @@ export const optimoMetadataPropTypes = {
   blockTypes: arrayOf(string),
 };
 
-export const cpsMetadataPropTypes = {
+const cpsMetaDataPropTypes = {
   id: string.isRequired,
   locators: shape({
     assetUri: string,
@@ -67,6 +85,14 @@ export const cpsMetadataPropTypes = {
   tags: objectOf(any),
   version: string.isRequired,
   blockTypes: arrayOf(string),
+};
+
+export const cpsFrontPageMetadataPropTypes = {
+  ...cpsMetaDataPropTypes,
   title: string.isRequired,
   summary: string.isRequired,
+};
+
+export const cpsAssetPageMetadataPropTypes = {
+  ...cpsMetaDataPropTypes,
 };

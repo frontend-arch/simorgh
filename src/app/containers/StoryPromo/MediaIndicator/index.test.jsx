@@ -1,9 +1,27 @@
 import React from 'react';
-
-import { shouldShallowMatchSnapshot, isNull } from '../../../../testHelpers';
+import { render } from '@testing-library/react';
+import { shouldMatchSnapshot, isNull } from '@bbc/psammead-test-helpers';
 import MediaIndicator from '.';
 
-const item = {
+const audioItem = {
+  headlines: {
+    headline: 'An audio item',
+  },
+  locators: {
+    assetUri: 'https://www.bbc.co.uk',
+  },
+  cpsType: 'MAP',
+  media: {
+    format: 'audio',
+    versions: [
+      {
+        duration: 59,
+      },
+    ],
+  },
+};
+
+const videoItem = {
   headlines: {
     headline: 'A video item',
   },
@@ -19,6 +37,16 @@ const item = {
       },
     ],
   },
+};
+
+const photogalleryItem = {
+  headlines: {
+    headline: 'A photo gallery item',
+  },
+  locators: {
+    assetUri: 'https://www.bbc.co.uk',
+  },
+  cpsType: 'PGL',
 };
 
 const nonMediaItem = {
@@ -67,17 +95,27 @@ const noMediaFormat = {
 };
 
 describe('Story Promo Media Indicator', () => {
-  shouldShallowMatchSnapshot(
-    'should render correctly',
-    <MediaIndicator item={item} service="news" />,
+  shouldMatchSnapshot(
+    'should render an audio item correctly',
+    <MediaIndicator item={audioItem} service="news" />,
   );
 
-  shouldShallowMatchSnapshot(
+  shouldMatchSnapshot(
+    'should render a video item correctly',
+    <MediaIndicator item={videoItem} service="news" />,
+  );
+
+  shouldMatchSnapshot(
+    'should render a photo gallery item correctly',
+    <MediaIndicator item={photogalleryItem} service="news" />,
+  );
+
+  shouldMatchSnapshot(
     'should render correctly even without duration',
     <MediaIndicator item={noDurationItem} service="news" />,
   );
 
-  shouldShallowMatchSnapshot(
+  isNull(
     'should not render if item media object has no format',
     <MediaIndicator item={noMediaFormat} service="news" />,
   );
@@ -91,4 +129,21 @@ describe('Story Promo Media Indicator', () => {
     'should not render if item media object is missing',
     <MediaIndicator item={noMediaObject} service="news" />,
   );
+
+  describe('with Index Alsos', () => {
+    shouldMatchSnapshot(
+      'should render a video indicator correctly',
+      <MediaIndicator item={noDurationItem} service="news" indexAlsos />,
+    );
+
+    it('should render ', () => {
+      const { container } = render(
+        <MediaIndicator item={noDurationItem} service="news" indexAlsos />,
+      );
+
+      const span = container.getElementsByTagName('span')[0];
+      expect(span.getAttribute('aria-hidden')).toBeDefined();
+      expect(span.getAttribute('aria-hidden')).toEqual('true');
+    });
+  });
 });

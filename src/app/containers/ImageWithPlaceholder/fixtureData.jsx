@@ -1,8 +1,8 @@
 import React from 'react';
 import { any, bool, string, number, objectOf } from 'prop-types';
 import FigureContainer from '.';
-import { ServiceContext } from '../../contexts/ServiceContext';
-import { RequestContextProvider } from '../../contexts/RequestContext';
+import { ServiceContext } from '#contexts/ServiceContext';
+import { RequestContextProvider } from '#contexts/RequestContext';
 
 const serviceContextStubNews = {
   imageCaptionOffscreenText: 'Image caption, ',
@@ -15,8 +15,10 @@ const WrappedImageWithPlaceholder = ({ isAmp, ...otherProps }) => (
       isUK
       origin="https://www.bbc.co.uk"
       id="c0000000000o"
-      statsDestination="NEWS_PS_TEST"
-      statsPageIdentifier="news.articles.c0000000000o"
+      service="news"
+      statusCode={200}
+      pathname="/pathname"
+      pageType="frontPage"
     >
       <FigureContainer {...otherProps} />
     </RequestContextProvider>
@@ -73,9 +75,11 @@ export const AmpImageWithPlaceholder = () => {
   return <WrappedImageWithPlaceholder {...props} />;
 };
 
-export const LazyLoadImageWithPlaceholder = () => {
+// eslint-disable-next-line react/prop-types
+export const LazyLoadImageWithPlaceholder = ({ fallback }) => {
   const props = {
     ...baseFixture,
+    fallback,
     lazyLoad: true,
   };
 

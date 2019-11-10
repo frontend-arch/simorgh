@@ -1,22 +1,22 @@
 import React from 'react';
-import { shouldShallowMatchSnapshot } from '../../../../testHelpers';
+import { shouldMatchSnapshot } from '@bbc/psammead-test-helpers';
 import WithError from '.';
+
+// eslint-disable-next-line react/prop-types
+jest.mock('../../ErrorMain', () => () => <h1>This is an error.</h1>);
 
 describe('withError HOC', () => {
   const Component = () => <h1>Hola</h1>;
   const ErrorHOC = WithError(Component);
 
   describe('with error', () => {
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       `should return the errorMain component`,
-      <ErrorHOC error="error handling at its best" />,
+      <ErrorHOC error={new Error('This is an error.')} />,
     );
   });
 
   describe('with no error', () => {
-    shouldShallowMatchSnapshot(
-      `should return the passed in component`,
-      <ErrorHOC error={null} />,
-    );
+    shouldMatchSnapshot('should return the passed in component', <ErrorHOC />);
   });
 });

@@ -1,3 +1,5 @@
+const { eslintDirAlias } = require('./dirAlias');
+
 module.exports = {
   extends: [
     'airbnb',
@@ -23,9 +25,24 @@ module.exports = {
   rules: {
     'react/forbid-foreign-prop-types': 'error',
     'react/jsx-one-expression-per-line': 'off',
+    'react/jsx-props-no-spreading': 'off',
     'linebreak-style': process.platform === 'win32' ? 'off' : ['error', 'unix'],
     'react-hooks/rules-of-hooks': 'error',
     'react-hooks/exhaustive-deps': 'warn',
-    'import/no-extraneous-dependencies': ['off', {'devDependencies': ['/.storybook/**', '**/stories.jsx', '/src/testHelpers/**', '/dataValidator/**']}],
+    'import/no-extraneous-dependencies': [
+      'off',
+      {
+        devDependencies: [
+          '/.storybook/**',
+          '**/stories.jsx',
+          '/src/testHelpers/**',
+        ],
+      },
+    ],
+  },
+  settings: {
+    'import/resolver': {
+      alias: eslintDirAlias,
+    },
   },
 };

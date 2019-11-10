@@ -1,5 +1,4 @@
-/* eslint-disable react/no-danger */
-import React, { Fragment } from 'react';
+import React from 'react';
 import { node } from 'prop-types';
 
 /*
@@ -7,11 +6,13 @@ import { node } from 'prop-types';
  */
 
 const IfAboveIE9 = ({ children }) => (
-  <Fragment>
+  <>
+    {/* eslint-disable-next-line react/no-danger */}
     <div dangerouslySetInnerHTML={{ __html: '<!--[if !IE]><!-->' }} />
     {children}
+    {/* eslint-disable-next-line react/no-danger */}
     <div dangerouslySetInnerHTML={{ __html: '<!--<![endif]-->' }} />
-  </Fragment>
+  </>
 );
 
 IfAboveIE9.propTypes = {

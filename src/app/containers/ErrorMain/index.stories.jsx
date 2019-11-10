@@ -1,9 +1,9 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { ServiceContextProvider } from '../../contexts/ServiceContext';
+import { ServiceContextProvider } from '#contexts/ServiceContext';
 import ErrorMain from '.';
 
-storiesOf('Error Page', module)
+storiesOf('Pages|Error Page', module)
   .add('404', () => (
     <ServiceContextProvider service="news">
       <ErrorMain status={404} />

@@ -6,7 +6,11 @@ import path from 'path';
 /*
  * Mock to avoid async behaviour in tests
  */
-jest.mock('../app/contexts/ServiceContext');
+jest.mock('#contexts/ServiceContext');
+
+global.Cypress = {
+  env: jest.fn(),
+};
 
 Enzyme.configure({ adapter: new Adapter() });
 
@@ -14,6 +18,8 @@ global.fetch = fetch;
 global.shallow = shallow;
 global.mount = mount;
 
+process.env.SIMORGH_PUBLIC_STATIC_ASSETS_ORIGIN = 'http://localhost:7080';
+process.env.SIMORGH_PUBLIC_STATIC_ASSETS_PATH = '/';
 process.env.SIMORGH_ASSETS_MANIFEST_PATH = path.resolve(
   __dirname,
   '../server/assets/fixture.json',

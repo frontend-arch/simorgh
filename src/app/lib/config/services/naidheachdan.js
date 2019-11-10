@@ -1,162 +1,216 @@
-import { C_POSTBOX } from '@bbc/psammead-styles/colours';
-import { latin } from '@bbc/gel-foundations/scripts';
-import { news as brandSVG } from '@bbc/psammead-assets/svgs';
+import { C_POSTBOX, C_WHITE } from '@bbc/psammead-styles/colours';
+import { latinDiacritics } from '@bbc/gel-foundations/scripts';
+import {
+  F_REITH_SANS_BOLD,
+  F_REITH_SANS_BOLD_ITALIC,
+  F_REITH_SANS_ITALIC,
+  F_REITH_SANS_REGULAR,
+  F_REITH_SERIF_MEDIUM,
+  F_REITH_SERIF_MEDIUM_ITALIC,
+} from '@bbc/psammead-styles/fonts';
+import { naidheachdan as brandSVG } from '@bbc/psammead-assets/svgs';
+import '@bbc/moment-timezone-include/tz/Europe/London';
+import withContext from '../../../contexts/utils/withContext';
+import 'moment/locale/gd';
 
-const service = {
-  lang: `gd`,
-  articleAuthor: `https://www.facebook.com/BBCNaidheachdan`,
-  articleTimestampPrefix: 'Updated',
-  atiAnalyticsAppName: 'news-naidheachdan',
-  brandName: "Naidheachdan a' BhBC",
-  product: "Naidheachdan a' BhBC",
-  defaultImage:
-    'https://www.bbc.co.uk/news/special/2015/newsspec_11063/naidheachdan_1024x576.png',
-  defaultImageAltText: "Naidheachdan a' BhBC",
-  dir: `ltr`,
-  externalLinkText: ', external',
-  imageCaptionOffscreenText: 'Image caption, ',
-  videoCaptionOffscreenText: 'Video caption, ',
-  audioCaptionOffscreenText: 'Audio caption',
-  defaultCaptionOffscreenText: 'Caption, ',
-  imageCopyrightOffscreenText: 'Image source, ',
-  locale: `gd`,
-  datetimeLocale: `gd`.toLowerCase(),
-  service: 'naidheachdan',
-  serviceName: 'Naidheachdan',
-  themeColor: `${C_POSTBOX}`,
-  twitterCreator: '@bbcnaidheachdan',
-  twitterSite: '@bbcnaidheachdan',
-  noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
-  publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
-  script: latin,
-  manifestPath: '/articles/manifest.json',
-  swPath: '/articles/sw.js',
-  translations: {
-    error: {
-      404: {
-        statusCode: '404',
-        title: '404 – Chan eil sgeul air an duilleig',
-        message:
-          "'S dòcha gur e as coireach gun do sgrìobh sibh an seòladh ceàrr. Thoiribh sùil air an t-seòladh agus an litreachadh.",
-        solutions: [
-          'Double checking the url',
-          'Hitting the refresh button in your browser',
-          'Searching for this page using the BBC search bar',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: "Duilleag Dachaigh Naidheachdan a' BhBC",
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/naidheachdan',
-      },
-      500: {
-        statusCode: '500',
-        title: '500 - Mearachd',
-        message: 'Bha trioblaid ann. Ùraich an duilleag.',
-        solutions: [
-          'Hitting the refresh button in your browser',
-          'Coming back again later',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: "Duilleag Dachaigh Naidheachdan a' BhBC",
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/naidheachdan',
-      },
+export const service = {
+  default: {
+    lang: `gd`,
+    articleAuthor: `https://www.facebook.com/bbcnews`,
+    articleTimestampPrefix: 'Ùraichte',
+    atiAnalyticsAppName: 'news-naidheachdan',
+    atiAnalyticsProducerId: '79',
+    brandName: 'BBC Naidheachdan',
+    product: 'BBC News',
+    serviceLocalizedName: 'Naidheachdan',
+    defaultImage:
+      'https://www.bbc.co.uk/news/special/2015/newsspec_11063/naidheachdan_1024x576.png',
+    defaultImageAltText: 'BBC Naidheachdan',
+    dir: `ltr`,
+    externalLinkText: ', taobh a-muigh',
+    imageCaptionOffscreenText: 'Tiotal an deilbh, ',
+    videoCaptionOffscreenText: "Tiotal a' bhidio, ",
+    audioCaptionOffscreenText: 'Tiotal na fuaime',
+    defaultCaptionOffscreenText: 'Fo-thiotal, ',
+    imageCopyrightOffscreenText: 'Tùs an deilbh, ',
+    locale: `gd`,
+    datetimeLocale: `gd`,
+    service: 'naidheachdan',
+    serviceName: 'Naidheachdan',
+    themeColor: `${C_POSTBOX}`,
+    twitterCreator: '@bbcnaidheachdan',
+    twitterSite: '@bbcnaidheachdan',
+    noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
+    publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
+    isTrustProjectParticipant: true,
+    script: latinDiacritics,
+    manifestPath: '/articles/manifest.json',
+    swPath: '/articles/sw.js',
+    frontPageTitle: 'Dachaigh',
+    theming: {
+      brandBackgroundColour: `${C_POSTBOX}`,
+      brandLogoColour: `${C_WHITE}`,
     },
-    consentBanner: {
-      privacy: {
-        title: "We've updated our Privacy and Cookies Policy",
-        description: {
-          uk: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
-          international: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
+    translations: {
+      seeAll: 'Faic uile',
+      home: 'Alba',
+      currentPage: 'An duilleag seo',
+      skipLinkText: 'Air adhart',
+      relatedContent: 'Co-cheangailte',
+      mediaAssetPage: {
+        mediaPlayer: 'Media player',
+        audioPlayer: 'Audio player',
+        videoPlayer: 'Video player',
+      },
+      error: {
+        404: {
+          statusCode: '404',
+          title: 'Chan eil sgeul air an duilleig',
+          message:
+            'Duilich, chan urrainn dhuinn an duilleag sin fhaighinn.  Feuch:',
+          solutions: [
+            "A' dèanamh ath-sgrùdaidh air an url",
+            "A' brùthadh air a' phutan ùraich sa bhrabhsair agaibh",
+            "Faigh lorg air an duilleig seo le bocsa sgrùdaidh a' BhBC",
+          ],
+          callToActionFirst: 'Neo, tadhail air an duilleig-dachaigh aig ',
+          callToActionLinkText: 'BBC Naidheachdan',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/naidheachdan',
         },
-        accept: 'OK',
-        reject: "Find out what's changed",
-        rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
-      },
-      cookie: {
-        title: 'Let us know you agree to cookies',
-        description: {
-          uk: {
-            first: 'We use ',
-            linkText: 'cookies',
-            last:
-              ' to give you the best online experience. Please let us know if you agree to all of these cookies.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
-          international: {
-            first: 'We and our partners use technologies, such as ',
-            linkText: 'cookies',
-            last:
-              ', and collect browsing data to give you the best online experience and to personalise the content and advertising shown to you. Please let us know if you agree.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
+        500: {
+          statusCode: '500',
+          title: 'Mearachd le frithealadair',
+          message:
+            'Duilich, chan urrainn dhuinn an duilleag sin fhaighinn.  Feuch:',
+          solutions: [
+            "A' brùthadh air a' phutan ùraich sa bhrabhsair agaibh",
+            "A' tilleadh a-rithist",
+          ],
+          callToActionFirst: 'Neo, tadhail air an duilleig-dachaigh aig ',
+          callToActionLinkText: 'BBC Naidheachdan',
+          callToActionLast: '',
+          callToActionLinkUrl: 'https://www.bbc.com/naidheachdan',
         },
-        accept: 'Yes, I agree',
-        reject: 'No, take me to settings',
-        rejectUrl:
-          'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+      },
+      consentBanner: {
+        privacy: {
+          title:
+            'Rinn sinn ùrachadh air ar poileasaidh mu phrìobhaideachd is dàta-brabhsair',
+          description: {
+            uk: {
+              first:
+                "Rinn sinn atharrachadh cudromach air ar poileasaidh mu phrìobhaideachd is dàta-brabhsair agus tha sinn airson tuigse a bhith agaibh dè tha sin a' ciallachadh dhuibhse agus dhan dàta agaibh.",
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+            international: {
+              first:
+                "Rinn sinn atharrachadh cudromach air ar poileasaidh mu phrìobhaideachd is dàta-brabhsair agus tha sinn airson tuigse a bhith agaibh dè tha sin a' ciallachadh dhuibhse agus dhan dàta agaibh.",
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+          },
+          accept: 'Gabh ris',
+          reject: 'Faigh a-mach dè tha air atharrachadh',
+          rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
+        },
+        cookie: {
+          title:
+            'Leig fios dhuinn gu bheil sibh ag aontachadh ri dàta-brabhsair',
+          description: {
+            uk: {
+              first: "Bidh sinn a' cleachdadh ",
+              linkText: 'dàta-brabhsair',
+              last:
+                " 'son an t-seirbheis as fheàrr air loidhne a thoirt dhuibh. Leig fios dhuinn ma tha sibh ag aontachadh ris an dàta-brabhsair uile.",
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+            international: {
+              first:
+                "Bidh sinn agus ar luchd-pàirt a' cur teicneòlais an sàs, a leithid ",
+              linkText: 'dàta-brabhsair',
+              last:
+                ", agus fiosrachadh mu bhrabhsadh 'son an t-seirbheis air loidhne as fheàrr a thoirt seachad agus 'son duilleagan agus sanasachd anns am bi ùidh agaibh a lìbhrigeadh. Leig fios dhuinn ma tha sibh ag aontachadh.",
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+          },
+          accept: 'Tha mi ag aontachadh',
+          reject: 'Chan eil mi ag aontachadh, fosgail roghainnean',
+          rejectUrl:
+            'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+        },
+      },
+      media: {
+        audio: 'Fuaim',
+        photogallery: 'Gailearaidh dhealbhan',
+        video: 'Bhidio',
       },
     },
-    media: {
-      audio: 'Fuaim',
-      photogallery: 'Gailearaidh dhealbhan',
-      video: 'Bhidio',
+    brandSVG,
+    mostRead: {
+      header: 'As motha leughte',
+      lastUpdated: 'Air ùrachadh mu dheireadh: ',
     },
-  },
-  brandSVG,
-  footer: {
-    externalLink: {
-      href: 'https://www.bbc.co.uk/help/web/links/',
-      text: 'Read about our approach to external linking.',
-    },
-    links: [
-      {
+    footer: {
+      trustProjectLink: {
         href: 'https://www.bbc.com/news/help-41670342',
-        text: 'Why you can trust the BBC',
+        text: 'Carson as urrainear earbsa a chur sa BhBC',
+      },
+      externalLink: {
+        href: 'https://www.bbc.co.uk/help/web/links/',
+        text:
+          'Leugh mun fheallsanachd againn mu cheangaileachan dhan taobh a-muigh',
+      },
+      links: [
+        {
+          href: 'https://www.bbc.com/terms',
+          text: 'Teirmean Cleachdaidh',
+        },
+        {
+          href: 'https://www.bbc.com/aboutthebbc',
+          text: 'Mun BhBC',
+        },
+        {
+          href: 'https://www.bbc.com/privacy/',
+          text: 'Poileasaidh Prìobhaideachd',
+        },
+        {
+          href: 'https://www.bbc.com/usingthebbc/cookies/',
+          text: 'Dàta-brabhsair',
+        },
+        {
+          href: 'https://www.bbc.com/contact/',
+          text: 'Cuir fios dhan BhBC',
+        },
+      ],
+      copyrightText:
+        "BBC. Chan eil am BBC an urra ris na tha a' nochdadh air làraichean-lìn air an taobh a-muigh",
+    },
+    fonts: [
+      F_REITH_SANS_BOLD,
+      F_REITH_SANS_BOLD_ITALIC,
+      F_REITH_SANS_ITALIC,
+      F_REITH_SANS_REGULAR,
+      F_REITH_SERIF_MEDIUM,
+      F_REITH_SERIF_MEDIUM_ITALIC,
+    ],
+    timezone: 'Europe/London',
+    navigation: [
+      {
+        title: 'Alba',
+        url: '/naidheachdan',
       },
       {
-        href: 'https://www.bbc.com/terms',
-        text: 'Terms of Use',
-      },
-      {
-        href: 'https://www.bbc.co.uk/aboutthebbc/',
-        text: 'About the BBC',
-      },
-      {
-        href: 'https://www.bbc.com/privacy/',
-        text: 'Privacy Policy',
-      },
-      {
-        href: 'https://www.bbc.com/usingthebbc/cookies/',
-        text: 'Cookies',
-      },
-      {
-        href: 'https://www.bbc.com/accessibility/',
-        text: 'Accessibility Help',
-      },
-      {
-        href: 'https://www.bbc.com/contact/',
-        text: 'Contact the BBC',
+        title: 'Scotland News',
+        url: '/news/scotland',
       },
     ],
-    copyrightText:
-      "Chan eil uallach air a' BhBC son na tha air làraichean-lìn eile",
   },
-  fonts: [],
 };
 
-export default service;
+export default withContext(service);

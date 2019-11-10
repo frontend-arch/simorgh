@@ -7,10 +7,12 @@ import {
 } from './fixtureData';
 import AmpDecorator from '../../../../.storybook/helpers/ampDecorator';
 
-storiesOf('ImageWithPlaceholder', module)
+storiesOf('Containers|Image with Placeholder/Canonical', module)
+  .addParameters({ chromatic: { disable: true } })
   .add('default', () => <ImageWithPlaceholder />)
   .add('with a lazyloaded image', () => <LazyLoadImageWithPlaceholder />);
 
-storiesOf('ImageWithPlaceholder - AMP', module)
+storiesOf('Containers|Image with Placeholder/AMP', module)
+  .addParameters({ chromatic: { disable: true } })
   .addDecorator(AmpDecorator)
   .add('default', () => <AmpImageWithPlaceholder />);

@@ -1,32 +1,33 @@
 import { useEffect, useState, useRef } from 'react';
 import { renderRoutes } from 'react-router-config';
-import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router';
+import path from 'ramda/src/path';
 import getRouteProps from '../../routes/getInitialData/utils/getRouteProps';
-import usePrevious from '../../lib/utilities/usePrevious';
+import usePrevious from '#lib/utilities/usePrevious';
 
-export const App = ({
-  routes,
-  location,
-  initialData,
-  bbcOrigin,
-  dials,
-  history,
-}) => {
+export const App = ({ routes, location, initialData, bbcOrigin, history }) => {
   const {
     service,
     isAmp,
+    variant,
     id,
+    errorCode,
     route: { pageType },
   } = getRouteProps(routes, location.pathname);
 
+  const { pageData, status, error } = initialData;
+
   const [state, setState] = useState({
-    data: initialData,
+    pageData,
+    status,
     service,
+    variant,
     id,
     isAmp,
     pageType,
+    error,
     loading: false,
-    error: null,
+    errorCode,
   });
 
   const isInitialMount = useRef(true);
@@ -38,39 +39,34 @@ export const App = ({
       // Only update on subsequent page renders
       const {
         service: nextService,
+        variant: nextVariant,
         id: nextId,
         isAmp: nextIsAmp,
         route,
-        match,
       } = getRouteProps(routes, location.pathname);
 
       setState({
-        data: null,
+        pageData: null,
+        status: null,
         service: nextService,
+        variant: nextVariant,
         id: nextId,
         isAmp: nextIsAmp,
         pageType: route.pageType,
         loading: true,
         error: null,
+        errorCode: null,
       });
 
-      const fetchData = async () => {
-        try {
-          const newData = await route.getInitialData(match.params);
-          setState(prevState => ({
-            ...prevState,
-            data: newData,
-            loading: false,
-          }));
-        } catch (error) {
-          setState(prevState => ({
-            ...prevState,
-            error,
-            loading: false,
-          }));
-        }
-      };
-      fetchData();
+      route.getInitialData(location.pathname).then(data =>
+        setState(prevState => ({
+          ...prevState,
+          loading: false,
+          pageData: path(['pageData'], data),
+          status: path(['status'], data),
+          error: path(['error'], data),
+        })),
+      );
     }
   }, [routes, location.pathname]);
 
@@ -78,11 +74,10 @@ export const App = ({
 
   // clear the previous path on back clicks
   const previousPath = history.action === 'POP' ? null : previousLocationPath;
-
   return renderRoutes(routes, {
     ...state,
     bbcOrigin,
-    dials,
+    pathname: location.pathname,
     previousPath,
   });
 };

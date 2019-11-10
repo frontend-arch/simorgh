@@ -1,10 +1,11 @@
 import React from 'react';
 import { StaticRouter } from 'react-router-dom';
-import { shouldMatchSnapshot } from '../../../testHelpers';
+import { shouldMatchSnapshot } from '@bbc/psammead-test-helpers';
 import InlineLinkContainer from './index';
-import { ServiceContextProvider } from '../../contexts/ServiceContext';
+import { ServiceContextProvider } from '#contexts/ServiceContext';
 
 const fragmentBlock = (text, attributes = []) => ({
+  id: '91238901',
   type: 'fragment',
   model: {
     text,
@@ -19,11 +20,13 @@ const testInternalInlineLink = (description, locator, blocks, isExternal) => {
       for the value it would bring, it is much simpler to wrap a react-router Link in a Router, rather than mock a Router or pass some mocked context.
     */
     <StaticRouter>
-      <InlineLinkContainer
-        locator={locator}
-        blocks={blocks}
-        isExternal={isExternal}
-      />
+      <ServiceContextProvider service="news">
+        <InlineLinkContainer
+          locator={locator}
+          blocks={blocks}
+          isExternal={isExternal}
+        />
+      </ServiceContextProvider>
     </StaticRouter>,
   );
 };
@@ -48,11 +51,13 @@ describe('InlineLinkContainer', () => {
   describe('internal link not matching SPA route', () => {
     shouldMatchSnapshot(
       'should render correctly',
-      <InlineLinkContainer
-        locator="https://www.bbc.com/news"
-        blocks={[fragmentBlock('This is bold text for a link', ['bold'])]}
-        isExternal={false}
-      />,
+      <ServiceContextProvider service="news">
+        <InlineLinkContainer
+          locator="https://www.bbc.com/news"
+          blocks={[fragmentBlock('This is bold text for a link', ['bold'])]}
+          isExternal={false}
+        />
+      </ServiceContextProvider>,
     );
   });
 
@@ -62,7 +67,7 @@ describe('InlineLinkContainer', () => {
       <ServiceContextProvider service="news">
         <InlineLinkContainer
           locator="https://www.example.com/"
-          blocks={[fragmentBlock('This is a link', [])]}
+          blocks={[fragmentBlock('This is a link')]}
           isExternal
         />
       </ServiceContextProvider>,
@@ -73,7 +78,7 @@ describe('InlineLinkContainer', () => {
       <ServiceContextProvider service="persian">
         <InlineLinkContainer
           locator="https://www.example.com/"
-          blocks={[fragmentBlock('این لینک هست', [''])]}
+          blocks={[fragmentBlock('این لینک هست')]}
           isExternal
         />
       </ServiceContextProvider>,

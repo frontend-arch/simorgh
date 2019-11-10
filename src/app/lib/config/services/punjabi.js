@@ -1,160 +1,204 @@
-import { C_POSTBOX } from '@bbc/psammead-styles/colours';
-import { latin } from '@bbc/gel-foundations/scripts';
-import { news as brandSVG } from '@bbc/psammead-assets/svgs';
+import { C_POSTBOX, C_WHITE } from '@bbc/psammead-styles/colours';
+import { devanagariAndGurmukhi } from '@bbc/gel-foundations/scripts';
+import { punjabi as brandSVG } from '@bbc/psammead-assets/svgs';
+import '@bbc/psammead-locales/moment/pa-in';
+import '@bbc/moment-timezone-include/tz/Asia/Kolkata';
+import withContext from '../../../contexts/utils/withContext';
 
-const service = {
-  lang: `pa-IN`,
-  articleAuthor: `https://www.facebook.com/bbcnewspunjabi`,
-  articleTimestampPrefix: 'Updated',
-  atiAnalyticsAppName: 'news-punjabi',
-  brandName: 'BBC News ਖ਼ਬਰਾਂ',
-  product: 'BBC News ਖ਼ਬਰਾਂ',
-  defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/punjabi.png',
-  defaultImageAltText: 'BBC News ਖ਼ਬਰਾਂ',
-  dir: `ltr`,
-  externalLinkText: ', external',
-  imageCaptionOffscreenText: 'Image caption, ',
-  videoCaptionOffscreenText: 'Video caption, ',
-  audioCaptionOffscreenText: 'Audio caption',
-  defaultCaptionOffscreenText: 'Caption, ',
-  imageCopyrightOffscreenText: 'Image source, ',
-  locale: `pa-IN`,
-  datetimeLocale: `pa-IN`.toLowerCase(),
-  service: 'punjabi',
-  serviceName: 'News ਖ਼ਬਰ',
-  themeColor: `${C_POSTBOX}`,
-  twitterCreator: '@bbcnewspunjabi',
-  twitterSite: '@bbcnewspunjabi',
-  noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
-  publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
-  script: latin,
-  manifestPath: '/articles/manifest.json',
-  swPath: '/articles/sw.js',
-  translations: {
-    error: {
-      404: {
-        statusCode: '404',
-        title: '404 - ਪੰਨਾ ਨਹੀਂ ਲੱਭਿਆ',
-        message:
-          'ਇਹ ਇਸ ਲਈ ਹੋ ਸਕਦਾ ਹੈ ਕਿਉਂਕਿ ਤੁਸੀਂ ਵੈੱਬ ਪਤੇ ਵਿੱਚ ਗਲਤ ਤਰੀਕੇ ਨਾਲ ਟਾਈਪ ਕੀਤਾ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਪਤਾ ਅਤੇ ਸ਼ਬਦ-ਜੋੜ ਦੀ ਜਾਂਚ ਕਰੋ।',
-        solutions: [
-          'Double checking the url',
-          'Hitting the refresh button in your browser',
-          'Searching for this page using the BBC search bar',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'BBC ਖ਼ਬਰਾਂ ਮੁੱਖ ਪੰਨਾ',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/punjabi',
-      },
-      500: {
-        statusCode: '500',
-        title: '500 - ਤਰੁੱਟੀ',
-        message: 'ਇੱਕ ਤਰੁੱਟੀ ਹੋਈ ਸੀ। ਕਿਰਪਾ ਕਰਕੇ ਪੰਨੇ ਨੂੰ ਰੀਫਰੈਸ਼ ਕਰੋ।',
-        solutions: [
-          'Hitting the refresh button in your browser',
-          'Coming back again later',
-        ],
-        callToActionFirst: 'Alternatively, please visit the ',
-        callToActionLinkText: 'BBC ਖ਼ਬਰਾਂ ਮੁੱਖ ਪੰਨਾ',
-        callToActionLast: '',
-        callToActionLinkUrl: 'https://www.bbc.com/punjabi',
-      },
+export const service = {
+  default: {
+    lang: `pa`,
+    articleAuthor: `https://www.facebook.com/bbcnews`,
+    articleTimestampPrefix: 'ਅਪਡੇਟ',
+    atiAnalyticsAppName: 'news-punjabi',
+    atiAnalyticsProducerId: '73',
+    brandName: 'BBC News ਪੰਜਾਬੀ',
+    product: 'BBC News',
+    serviceLocalizedName: 'ਪੰਜਾਬੀ',
+    defaultImage: 'https://news.files.bbci.co.uk/ws/img/logos/og/punjabi.png',
+    defaultImageAltText: 'BBC News ਪੰਜਾਬੀ',
+    dir: `ltr`,
+    externalLinkText: ', ਬਾਹਰੀ',
+    imageCaptionOffscreenText: 'ਤਸਵੀਰ ਕੈਪਸ਼ਨ, ',
+    videoCaptionOffscreenText: 'ਵੀਡੀਓ ਕੈਪਸ਼ਨ, ',
+    audioCaptionOffscreenText: 'ਆਡੀਓ ਕੈਪਸ਼ਨ, ',
+    defaultCaptionOffscreenText: 'ਕੈਪਸ਼ਨ, ',
+    imageCopyrightOffscreenText: 'ਤਸਵੀਰ ਸਰੋਤ, ',
+    locale: `pa-IN`,
+    datetimeLocale: `pa-in`,
+    service: 'punjabi',
+    serviceName: 'Punjabi',
+    themeColor: `${C_POSTBOX}`,
+    twitterCreator: '@bbcnewspunjabi',
+    twitterSite: '@bbcnewspunjabi',
+    noBylinesPolicy: 'https://www.bbc.com/news/help-41670342#authorexpertise',
+    publishingPrinciples: 'https://www.bbc.com/news/help-41670342',
+    isTrustProjectParticipant: true,
+    script: devanagariAndGurmukhi,
+    manifestPath: '/manifest.json',
+    swPath: '/sw.js',
+    frontPageTitle: 'ਨਿਊਜ਼',
+    theming: {
+      brandBackgroundColour: `${C_POSTBOX}`,
+      brandLogoColour: `${C_WHITE}`,
     },
-    consentBanner: {
-      privacy: {
-        title: "We've updated our Privacy and Cookies Policy",
-        description: {
-          uk: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
-          international: {
-            first:
-              "We've made some important changes to our Privacy and Cookies Policy and we want you to know what this means for you and your data.",
-            linkText: null,
-            last: null,
-            linkUrl: null,
-          },
+    translations: {
+      seeAll: 'ਸਭ ਦੋਖੇ',
+      home: 'ਹੋਮ ਪੇਜ',
+      currentPage: 'ਮੌਜੂਦਾ ਪੇਜ',
+      skipLinkText: `ਸਮੱਗਰੀ 'ਤੇ ਜਾਓ`,
+      relatedContent: 'Related content',
+      mediaAssetPage: {
+        mediaPlayer: 'Media player',
+        audioPlayer: 'Audio player',
+        videoPlayer: 'Video player',
+      },
+      error: {
+        404: {
+          statusCode: '404',
+          title: 'ਪੇਜ ਨਹੀਂ ਮਿਲ ਰਿਹਾ',
+          message:
+            'ਮੁਆਫ਼ ਕਰੋ, ਅਸੀਂ ਤੁਹਾਨੂੰ ਉਸ ਪੇਜ ਤੱਕ ਨਹੀਂ ਲੈ ਕੇ ਜਾ ਸਕਦੇ, ਜੋ ਤੁਸੀਂ ਲੱਭ ਰਹੇ ਹੋ। ਦੁਬਾਰਾ ਕੋਸ਼ਿਸ਼ ਕਰੋ',
+          solutions: [
+            'url ਨੂੰ ਦੁਬਾਰਾ ਚੈੱਕ ਕਰੋ',
+            'ਆਪਣੇ ਬ੍ਰਾਊਜ਼ਰ ਦੇ ਰਿਫਰੈਸ਼ ਬਟਨ ਨੂੰ ਦਬਾਓ',
+            'ਇਸ ਪੇਜ ਨੂੰ ਬੀਬੀਸੀ ਸਰਚ ਬਾਰ ਰਾਹੀਂ ਲੱਭਣ ਦੀ ਕੋਸ਼ਿਸ਼ ਕਰੋ',
+          ],
+          callToActionFirst: 'ਬਦਲ ਵਜੋਂ, ',
+          callToActionLinkText: 'BBC News ਪੰਜਾਬੀ',
+          callToActionLast: ` ਦੇ ਹੋਮ ਪੇਜ 'ਤੇ ਜਾਓ`,
+          callToActionLinkUrl: 'https://www.bbc.com/punjabi',
         },
-        accept: 'OK',
-        reject: "Find out what's changed",
-        rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
-      },
-      cookie: {
-        title: 'Let us know you agree to cookies',
-        description: {
-          uk: {
-            first: 'We use ',
-            linkText: 'cookies',
-            last:
-              ' to give you the best online experience. Please let us know if you agree to all of these cookies.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
-          international: {
-            first: 'We and our partners use technologies, such as ',
-            linkText: 'cookies',
-            last:
-              ', and collect browsing data to give you the best online experience and to personalise the content and advertising shown to you. Please let us know if you agree.',
-            linkUrl:
-              'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
-          },
+        500: {
+          statusCode: '500',
+          title: 'ਅੰਦਰੂਨੀ ਸਰਵਰ ਐਰਰ',
+          message:
+            'ਮੁਆਫ਼ ਕਰੋ, ਅਸੀਂ ਤੁਹਾਨੂੰ ਉਸ ਪੇਜ ਤੱਕ ਨਹੀਂ ਲੈ ਕੇ ਜਾ ਸਕਦੇ, ਜੋ ਤੁਸੀਂ ਲੱਭ ਰਹੇ ਹੋ। ਇਹ ਕਰੋ:',
+          solutions: ['ਆਪਣੇ ਬ੍ਰਾਊਜ਼ਰ ਦੇ ਰਿਫਰੈਸ਼ ਬਟਨ ਨੂੰ ਦਬਾਓ', 'ਬਾਅਦ ਵਿੱਚ ਆਓ'],
+          callToActionFirst: 'ਬਦਲ ਵਜੋਂ,  ',
+          callToActionLinkText: 'BBC News ਪੰਜਾਬੀ',
+          callToActionLast: ` ਦੇ ਹੋਮ ਪੇਜ 'ਤੇ ਜਾਓ`,
+          callToActionLinkUrl: 'https://www.bbc.com/punjabi',
         },
-        accept: 'Yes, I agree',
-        reject: 'No, take me to settings',
-        rejectUrl:
-          'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+      },
+      consentBanner: {
+        privacy: {
+          title: 'ਅਸੀਂ ਆਪਣੀ ਨਿੱਜਤਾ ਤੇ ਕੁਕੀਜ਼ ਪਾਲਿਸੀ ਨੂੰ ਅਪਡੇਟ ਕਰ ਦਿੱਤਾ ਹੈ',
+          description: {
+            uk: {
+              first:
+                'ਅਸੀਂ ਆਪਣੀ ਨਿੱਜਤਾ ਤੇ ਕੁਕੀਜ਼ ਪਾਲਿਸੀ ਵਿੱਚ ਕੁਝ ਮਹੱਤਵਪੂਰਨ ਬਦਲਾਅ ਕੀਤੇ ਹਨ ਅਤੇ ਅਸੀਂ ਜਾਣਨਾ ਚਾਹੁੰਦੇ ਹਾਂ, ਤੁਹਾਡੇ ਤੇ ਤੁਹਾਡੇ ਡਾਟਾ ਲਈ ਇਸ ਦੇ ਕੀ ਮਾਅਨੇ ਹਨ।',
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+            international: {
+              first:
+                'ਅਸੀਂ ਆਪਣੀ ਨਿੱਜਤਾ ਤੇ ਕੁਕੀਜ਼ ਪਾਲਿਸੀ ਵਿੱਚ ਕੁਝ ਮਹੱਤਵਪੂਰਨ ਬਦਲਾਅ ਕੀਤੇ ਹਨ ਅਤੇ ਅਸੀਂ ਜਾਣਨਾ ਚਾਹੁੰਦੇ ਹਾਂ, ਤੁਹਾਡੇ ਤੇ ਤੁਹਾਡੇ ਡਾਟਾ ਲਈ ਇਸ ਦੇ ਕੀ ਮਾਅਨੇ ਹਨ।',
+              linkText: null,
+              last: null,
+              linkUrl: null,
+            },
+          },
+          accept: 'ਓਕੇ',
+          reject: 'ਜਾਣੋ ਕੀ ਬਦਲਿਆ ਹੈ',
+          rejectUrl: 'https://www.bbc.co.uk/usingthebbc/your-data-matters',
+        },
+        cookie: {
+          title: 'ਸਾਨੂੰ ਦੱਸੋ ਜੇ ਤੁਸੀਂ ਕੁਕੀਜ਼ ਲਈ ਸਹਿਮਤ ਹੋ',
+          description: {
+            uk: {
+              first: 'ਅਸੀਂ ਤੁੁਹਾਨੂੰ ਸਭ ਤੋਂ ਵਧੀਆ ਤਜਰਬਾ ਦੇਣ ਲਈ ',
+              linkText: 'ਕੁਕੀਜ਼',
+              last:
+                ' ਦੀ ਵਰਤੋਂ ਕਰ ਰਹੇ ਹਾਂ। ਕ੍ਰਿਪਾ ਕਰਕੇ ਸਾਨੂੰ ਦੱਸੋ ਕਿ ਤੁਸੀਂ ਇਨ੍ਹਾਂ ਸਾਰੀਆਂ ਕੁਕੀਜ਼ ਨਾਲ ਸਹਿਮਤ ਹੋ',
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+            international: {
+              first: 'ਅਸੀਂ ਅਤੇ ਸਾਡੇ ਭਾਈਵਾਲ ਤਕਨੀਕ ਦੀ ਵਰਤੋਂ ਕਰਦੇ ਹਾਂ, ਜਿਵੇਂ ਕਿ ',
+              linkText: 'ਕੁਕੀਜ਼',
+              last:
+                ' ਅਤੇ ਤੁਹਾਨੂੰ ਸਭ ਤੋਂ ਵਧੀਆ ਆਨਲਾਈਨ ਤਜਰਬਾ ਦੇਣ ਲਈ ਤੇ ਤੁਹਾਨੂੰ ਦਿਖਾਈ ਗਈ ਸਾਮਗਰੀ ਅਤੇ ਇਸ਼ਤਿਹਾਰਾਂ ਨੂੰ ਨਿੱਜੀ ਕਰਨ ਲਈ ਬ੍ਰਾਊਜ਼ਰ ਡਾਟਾ ਨੂੰ ਇਕੱਠਾ ਕਰਦੇ ਹਾਂ। ਜੇਕਰ ਤੁਸੀਂ ਸਹਿਮਤ ਹੋ ਤਾਂ ਸਾਨੂੰ ਦੱਸੋ।',
+              linkUrl:
+                'https://www.bbc.co.uk/usingthebbc/cookies/what-do-i-need-to-know-about-cookies/',
+            },
+          },
+          accept: 'ਹਾਂ, ਮੈਂ ਸਹਿਮਤ ਹਾਂ',
+          reject: "ਨਹੀਂ, ਸੈਟਿੰਗ 'ਚ ਜਾਓ ",
+          rejectUrl:
+            'https://www.bbc.co.uk/usingthebbc/cookies/how-can-i-change-my-bbc-cookie-settings/',
+        },
+      },
+      media: {
+        audio: 'ਔਡੀਓ',
+        photogallery: 'ਫੋਟੋ ਗੈਲਰੀ',
+        video: 'ਵੀਡੀਓ',
       },
     },
-    media: {
-      audio: 'ਔਡੀਓ',
-      photogallery: 'ਚਿੱਤਰ ਗੈਲਰੀ',
-      video: 'ਵੀਡੀਓ',
+    brandSVG,
+    mostRead: {
+      header: 'ਸਭ ਤੋਂ ਵੱਧ ਪੜ੍ਹਿਆ ਗਿਆ',
+      lastUpdated: 'ਆਖ਼ਰੀ ਅਪਡੇਟ: ',
     },
-  },
-  brandSVG,
-  footer: {
-    externalLink: {
-      href: 'https://www.bbc.co.uk/help/web/links/',
-      text: 'Read about our approach to external linking.',
-    },
-    links: [
+    navigation: [
       {
-        href: 'https://www.bbc.com/news/help-41670342',
-        text: 'Why you can trust the BBC',
+        title: 'ਖ਼ਬਰਾਂ',
+        url: '/punjabi',
       },
       {
-        href: 'https://www.bbc.com/terms',
-        text: 'Terms of Use',
+        title: 'ਵੀਡੀਓ',
+        url: '/punjabi/media/video',
       },
       {
-        href: 'https://www.bbc.co.uk/aboutthebbc/',
-        text: 'About the BBC',
+        title: 'ਪਾਠਕਾਂ ਦੀ ਪਸੰਦ',
+        url: '/punjabi/popular/read',
       },
       {
-        href: 'https://www.bbc.com/privacy/',
-        text: 'Privacy Policy',
+        title: 'ਭਾਰਤ',
+        url: '/punjabi/topics/5a08f030-710f-4168-acee-67294a90fc75',
       },
       {
-        href: 'https://www.bbc.com/usingthebbc/cookies/',
-        text: 'Cookies',
-      },
-      {
-        href: 'https://www.bbc.com/accessibility/',
-        text: 'Accessibility Help',
-      },
-      {
-        href: 'https://www.bbc.com/contact/',
-        text: 'Contact the BBC',
+        title: 'ਕੌਮਾਂਤਰੀ',
+        url: '/punjabi/international',
       },
     ],
-    copyrightText: 'BBC ਬਾਹਰੀ ਇੰਟਰਨੈੱਟ ਸਾਈਟਾਂ ਦੀ ਸਮੱਗਰੀ ਲਈ ਜ਼ਿੰਮੇਵਾਰ ਨਹੀਂ ਹੈ',
+    footer: {
+      trustProjectLink: {
+        href: 'https://www.bbc.com/punjabi/institutional-49282853',
+        text: "ਤੁਸੀਂ ਬੀਬੀਸੀ 'ਤੇ ਕਿਉਂ ਵਿਸ਼ਵਾਸ਼ ਕਰ ਸਕਦੇ ਹੋ",
+      },
+      externalLink: {
+        href: 'https://www.bbc.co.uk/help/web/links/',
+        text: 'ਬਾਹਰੀ ਲਿੰਕਿੰਗ ਲਈ ਸਾਡੇ ਤਰੀਕੇ ਬਾਰੇ ਪੜ੍ਹੋ',
+      },
+      links: [
+        {
+          href: 'https://www.bbc.com/terms',
+          text: 'ਵਰਤੋ ਦੀਆਂ ਸ਼ਰਤਾਂ',
+        },
+        {
+          href: 'https://www.bbc.co.uk/aboutthebbc',
+          text: 'BBC ਬਾਰੇ',
+        },
+        {
+          href: 'https://www.bbc.com/privacy/',
+          text: 'ਨਿੱਜਤਾ ਪਾਲਿਸੀ',
+        },
+        {
+          href: 'https://www.bbc.com/usingthebbc/cookies/',
+          text: 'ਕੁਕੀਜ਼',
+        },
+        {
+          href: 'https://www.bbc.com/punjabi/institutional-42227903',
+          text: 'ਬੀਬੀਸੀ ਨਾਲ ਸੰਪਰਕ ਕਰੋ',
+        },
+      ],
+      copyrightText: 'BBC. ਬਾਹਰੀ ਸਾਈਟਾਂ ਦੀ ਸਮਗਰੀ ਲਈ ਬੀਬੀਸੀ ਜ਼ਿੰਮੇਵਾਰ ਨਹੀਂ ਹੈ',
+    },
+    fonts: [],
+    timezone: 'Asia/Kolkata',
   },
-  fonts: [],
 };
 
-export default service;
+export default withContext(service);

@@ -1,4 +1,4 @@
-import news from '../../../src/app/lib/config/services/news';
+import { service as news } from '../../../src/app/lib/config/services/news';
 
 // This is a 3rd party test, but if it fails we should arrange for it to be fixed.
 describe('Test the mozart 404 page', () => {
@@ -6,17 +6,18 @@ describe('Test the mozart 404 page', () => {
   before(() => {
     cy.visit('https://www.bbc.com/news/articles/cxvxrj8tvppo', {
       failOnStatusCode: false,
+      timeout: 10000,
     });
   });
 
   it('should have the correct lang & dir attributes', () => {
-    cy.get('html').should('have.attr', 'lang', 'en_GB');
+    cy.get('html').should('have.attr', 'lang', 'en-GB');
   });
 
   it('should display a relevant error message on screen', () => {
     cy.get('h1')
-      .should('contain', `${news.translations.error[404].title}`)
-      .and('contain', `${news.translations.error[404].statusCode}`);
+      .should('contain', `${news.default.translations.error[404].title}`)
+      .and('contain', `${news.default.translations.error[404].statusCode}`);
   });
 
   it('should have an inline link on the page that is linked to the home page', () => {
@@ -26,7 +27,7 @@ describe('Test the mozart 404 page', () => {
         cy.get('a').should(
           'have.attr',
           'href',
-          `${news.translations.error[404].callToActionLinkUrl}`,
+          `${news.default.translations.error[404].callToActionLinkUrl}`,
         );
       });
   });
@@ -34,7 +35,7 @@ describe('Test the mozart 404 page', () => {
   it('should have a relevant error title in the head', () => {
     cy.title().should(
       'eq',
-      `${news.translations.error[404].title} - ${news.brandName}`,
+      `${news.default.translations.error[404].title} - ${news.default.brandName}`,
     );
   });
 });

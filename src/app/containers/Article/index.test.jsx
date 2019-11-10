@@ -1,9 +1,17 @@
 import React from 'react';
-import { shouldMatchSnapshot } from '../../../testHelpers';
+import { shouldMatchSnapshot } from '@bbc/psammead-test-helpers';
 import ArticleContainer from './index';
 
 // explicitly ignore console.log errors for Article/index:getInitialProps() error logging
 global.console.log = jest.fn();
+
+const defaultProps = {
+  isAmp: false,
+  pageType: 'article',
+  service: 'news',
+  pathname: '/pathname',
+  status: 200,
+};
 
 jest.mock('../PageHandlers/withPageWrapper', () => Component => {
   const PageWrapperContainer = props => (
@@ -56,7 +64,7 @@ describe('ArticleContainer', () => {
     describe('Composing the Article Container using the page handlers', () => {
       shouldMatchSnapshot(
         'should compose articleContainer with the Page Handler in the correct order',
-        <ArticleContainer />,
+        <ArticleContainer {...defaultProps} />,
       );
     });
   });

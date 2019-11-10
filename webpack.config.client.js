@@ -1,8 +1,7 @@
 /* eslint-disable global-require */
-const AssetsPlugin = require('assets-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const MomentTimezoneDataPlugin = require('moment-timezone-data-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const LoadablePlugin = require('@loadable/webpack-plugin');
 const webpack = require('webpack');
 const dotenv = require('dotenv');
 const { DuplicatesPlugin } = require('inspectpack/plugin');
@@ -25,13 +24,14 @@ module.exports = ({ resolvePath, IS_CI, IS_PROD, START_DEV_SERVER }) => {
     target: 'web', // compile for browser environment
     entry: START_DEV_SERVER
       ? [
-          `webpack-dev-server/client?http://localhost.bbc.com:${webpackDevServerPort}`,
+          `webpack-dev-server/client?http://localhost:${webpackDevServerPort}`,
           'webpack/hot/only-dev-server',
+          './src/poly',
           './src/client',
         ]
       : ['./src/poly', './src/client'],
     devServer: {
-      host: 'localhost.bbc.com',
+      host: 'localhost',
       port: webpackDevServerPort,
       historyApiFallback: true,
       hot: true,
@@ -52,7 +52,7 @@ module.exports = ({ resolvePath, IS_CI, IS_PROD, START_DEV_SERVER }) => {
         : 'static/js/[name].[chunkhash:8].js', // hash based on the contents of the file
       // need full URL for dev server & HMR: https://github.com/webpack/docs/wiki/webpack-dev-server#combining-with-an-existing-server
       publicPath: START_DEV_SERVER
-        ? `http://localhost.bbc.com:${webpackDevServerPort}/`
+        ? `http://localhost:${webpackDevServerPort}/`
         : prodPublicPath,
     },
     optimization: {
@@ -77,12 +77,6 @@ module.exports = ({ resolvePath, IS_CI, IS_PROD, START_DEV_SERVER }) => {
       __filename: 'mock',
     },
     plugins: [
-      // keep track of the generated chunks in build/assets.json
-      // this determines what scripts get put in the footer of the page
-      new AssetsPlugin({
-        path: resolvePath('build'),
-        filename: `assets-${APP_ENV}.json`,
-      }),
       // copy static files otherwise untouched by Webpack, e.g. favicon
       new CopyWebpackPlugin([
         {
@@ -126,13 +120,11 @@ module.exports = ({ resolvePath, IS_CI, IS_PROD, START_DEV_SERVER }) => {
         resourceRegExp: /^\.\/locale$/,
         contextRegExp: /moment$/,
       }),
-      /* moment-timezone-data-plugin allows you to specify how much
-       * and what specific timezone data you wish to bundle.
-       * matchZones: (string or array of strings) Only include data
-       * for time zones with names matching this value.
-       */
-      new MomentTimezoneDataPlugin({
-        matchZones: 'Europe/London',
+      // keep track of the generated chunks
+      // this determines what scripts get put in the footer of the page
+      new LoadablePlugin({
+        filename: `loadable-stats-${APP_ENV}.json`,
+        writeToDisk: true,
       }),
     ],
   };

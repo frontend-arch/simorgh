@@ -1,94 +1,52 @@
-import React, { Fragment, useContext } from 'react';
-import { shape, oneOfType } from 'prop-types';
-import pathOr from 'ramda/src/pathOr';
-import { ServiceContext } from '../../contexts/ServiceContext';
-import { RequestContext } from '../../contexts/RequestContext';
-import Metadata from '../../components/Metadata';
-import LinkedData from '../../components/LinkedData';
+import React, { useContext } from 'react';
+import { string, node } from 'prop-types';
+import Helmet from 'react-helmet';
+import { ServiceContext } from '#contexts/ServiceContext';
+import { RequestContext } from '#contexts/RequestContext';
 import {
-  optimoMetadataPropTypes,
-  cpsMetadataPropTypes,
-} from '../../models/propTypes/metadata';
-import {
-  optimoPromoPropTypes,
-  cpsPromoPropTypes,
-} from '../../models/propTypes/promo';
-import aboutTagsContent from './linkedDataAbout';
+  getIconAssetUrl,
+  getIconLinks,
+  renderAmpHtml,
+  getAppleTouchUrl,
+  renderAlternateLinks,
+} from './utils';
 
 const ENGLISH_SERVICES = ['news'];
-
-const pageTypeMetadata = {
-  article: {
-    schemaOrg: 'Article',
-    openGraph: 'article',
-  },
-  frontPage: {
-    schemaOrg: 'WebPage',
-    openGraph: 'website',
-  },
+const FACEBOOK_ADMIN_ID = 100004154058350;
+const FACEBOOK_APP_ID = 1609039196070050;
+const iconSizes = {
+  'apple-touch-icon': [
+    '72x72',
+    '96x96',
+    '128x128',
+    '144x144',
+    '152x152',
+    '192x192',
+    '384x384',
+    '512x512',
+  ],
+  icon: ['72x72', '96x96', '192x192'],
 };
 
-/* An array of each thingLabel from tags.about & tags.mention */
-const allTags = tags => {
-  const { about, mentions } = tags;
-  const aboutTags = about ? about.map(thing => thing.thingLabel) : [];
-  const mentionTags = mentions ? mentions.map(thing => thing.thingLabel) : [];
-  return aboutTags.concat(mentionTags);
-};
-
-const getTitle = promo =>
-  promo.subType === 'IDX'
-    ? pathOr(null, ['name'], promo)
-    : pathOr(null, ['headlines', 'seoHeadline'], promo);
-
-const getDescription = (metadata, promo) =>
-  pathOr(null, ['summary'], promo) ||
-  pathOr(null, ['headlines', 'seoHeadline'], promo) ||
-  pathOr(null, ['summary'], metadata);
-
-const getLink = (origin, service, id, pageType, linkType = '') => {
-  // according to https://github.com/bbc/simorgh/pull/1945, canonical links should use .com
-  const linkOrigin = linkType === 'canonical' ? 'https://www.bbc.com' : origin;
-
-  let link =
-    pageType === 'article'
-      ? `${linkOrigin}/${service}/articles/${id}`
-      : `${linkOrigin}/${service}`;
-
-  if (linkType === 'amp') {
-    link = `${link}.amp`;
-  }
-
-  return link;
-};
-
-const getTimeTags = (timeTag, pageType) => {
-  if (pageType !== 'article') {
-    return null;
-  }
-
-  return new Date(timeTag).toISOString();
-};
-
-const getAppleTouchUrl = service => {
-  const assetsPath = process.env.SIMORGH_PUBLIC_STATIC_ASSETS_PATH || '/';
-  const separatorSlash = assetsPath[assetsPath.length - 1] !== '/' ? '/' : '';
-
-  return [
-    process.env.SIMORGH_PUBLIC_STATIC_ASSETS_ORIGIN,
-    assetsPath,
-    separatorSlash,
-    service,
-    '/images/icons/icon-192x192.png',
-  ].join('');
-};
-
-const MetadataContainer = ({ metadata, promo }) => {
-  const { origin, pageType, platform } = useContext(RequestContext);
+const MetadataContainer = ({
+  title,
+  lang,
+  description,
+  openGraphType,
+  children,
+}) => {
+  const {
+    platform,
+    canonicalLink,
+    ampLink,
+    canonicalUkLink,
+    ampUkLink,
+    canonicalNonUkLink,
+    ampNonUkLink,
+  } = useContext(RequestContext);
   const {
     service,
     brandName,
-    articleAuthor,
     defaultImage,
     defaultImageAltText,
     dir,
@@ -97,46 +55,24 @@ const MetadataContainer = ({ metadata, promo }) => {
     themeColor,
     twitterCreator,
     twitterSite,
-    publishingPrinciples,
-    noBylinesPolicy,
   } = useContext(ServiceContext);
-  const { id: aresArticleId } = metadata;
-
-  if (!aresArticleId) {
-    return null;
-  }
-
-  const id = aresArticleId.split(':').pop();
-
-  const timeFirstPublished = getTimeTags(metadata.firstPublished, pageType);
-  const timeLastPublished = getTimeTags(metadata.lastPublished, pageType);
-
-  const canonicalLink = getLink(origin, service, id, pageType, 'canonical');
-  const canonicalLinkUK = `https://www.bbc.co.uk/${service}/articles/${id}`;
-  const canonicalLinkNonUK = `https://www.bbc.com/${service}/articles/${id}`;
-  const ampLink = getLink(origin, service, id, pageType, 'amp');
-  const ampLinkUK = `https://www.bbc.co.uk/${service}/articles/${id}.amp`;
-  const ampLinkNonUK = `https://www.bbc.com/${service}/articles/${id}.amp`;
   const appleTouchIcon = getAppleTouchUrl(service);
   const isAmp = platform === 'amp';
-
-  let alternateLinks = [];
-
+  const isEnglishService = ENGLISH_SERVICES.includes(service);
   const alternateLinksEnglishSites = [
     {
-      href: isAmp ? ampLinkNonUK : canonicalLinkNonUK,
+      href: isAmp ? ampNonUkLink : canonicalNonUkLink,
       hrefLang: 'x-default',
     },
     {
-      href: isAmp ? ampLinkNonUK : canonicalLinkNonUK,
+      href: isAmp ? ampNonUkLink : canonicalNonUkLink,
       hrefLang: 'en',
     },
     {
-      href: isAmp ? ampLinkUK : canonicalLinkUK,
+      href: isAmp ? ampUkLink : canonicalUkLink,
       hrefLang: 'en-gb',
     },
   ];
-
   const alternateLinksWsSites = [
     {
       href: canonicalLink,
@@ -144,83 +80,79 @@ const MetadataContainer = ({ metadata, promo }) => {
     },
   ];
 
-  if (ENGLISH_SERVICES.includes(service)) {
-    alternateLinks = alternateLinksEnglishSites;
-  } else if (isoLang) {
-    alternateLinks = alternateLinksWsSites;
-  }
-
-  const iconSizes = {
-    'apple-touch-icon': [
-      '72x72',
-      '96x96',
-      '128x128',
-      '144x144',
-      '152x152',
-      '192x192',
-      '384x384',
-      '512x512',
-    ],
-    icon: ['72x72', '96x96', '192x192'],
+  const htmlAttributes = {
+    dir,
+    lang,
+    ...(isAmp && { amp: '' }), // empty value as this makes Helmet render 'amp' as per https://www.ampproject.org/docs/fundamentals/spec#ampd
   };
 
+  const pageTitle = `${title} - ${brandName}`;
+
   return (
-    <Fragment>
-      <LinkedData
-        brandName={brandName}
-        canonicalLink={canonicalLink}
-        firstPublished={timeFirstPublished}
-        lastUpdated={timeLastPublished}
-        logoUrl={defaultImage}
-        noBylinesPolicy={noBylinesPolicy}
-        publishingPrinciples={publishingPrinciples}
-        seoHeadline={getTitle(promo)}
-        type={pathOr(null, [pageType, 'schemaOrg'], pageTypeMetadata)}
-        about={aboutTagsContent(pathOr(null, ['tags', 'about'], metadata))}
+    <Helmet htmlAttributes={htmlAttributes}>
+      <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
+      <meta charSet="utf-8" />
+      <meta name="robots" content="noodp,noydir" />
+      <meta name="theme-color" content={themeColor} />
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, minimum-scale=1"
       />
-      <Metadata
-        isAmp={isAmp}
-        alternateLinks={alternateLinks}
-        ampLink={ampLink}
-        appleTouchIcon={appleTouchIcon}
-        articleAuthor={articleAuthor}
-        articleSection={pathOr(null, ['passport', 'genre'], metadata)}
-        brandName={brandName}
-        canonicalLink={canonicalLink}
-        defaultImage={defaultImage}
-        defaultImageAltText={defaultImageAltText}
-        description={getDescription(metadata, promo)}
-        dir={dir}
-        facebookAdmin={100004154058350}
-        facebookAppID={1609039196070050}
-        lang={
-          pathOr(null, ['passport', 'language'], metadata) ||
-          pathOr(null, ['language'], metadata)
-        }
-        locale={locale}
-        metaTags={allTags(metadata.tags)}
-        themeColor={themeColor}
-        timeFirstPublished={timeFirstPublished}
-        timeLastPublished={timeLastPublished}
-        title={getTitle(promo)}
-        twitterCreator={twitterCreator}
-        twitterSite={twitterSite}
-        type={pathOr(null, [pageType, 'openGraph'], pageTypeMetadata)}
-        service={service}
-        showArticleTags={pageType === 'article'}
-        iconSizes={iconSizes}
+      <title>{pageTitle}</title>
+      <link rel="canonical" href={canonicalNonUkLink} />
+      {isEnglishService && alternateLinksEnglishSites.map(renderAlternateLinks)}
+      {isoLang &&
+        !isEnglishService &&
+        alternateLinksWsSites.map(renderAlternateLinks)}
+      {renderAmpHtml(ampLink, isAmp)}
+      <meta name="apple-mobile-web-app-title" content={brandName} />
+      <meta name="application-name" content={brandName} />
+      <meta name="description" content={description} />
+      <meta name="fb:admins" content={FACEBOOK_ADMIN_ID} />
+      <meta name="fb:app_id" content={FACEBOOK_APP_ID} />
+      <meta name="mobile-web-app-capable" content="yes" />
+      <meta name="msapplication-TileColor" content={themeColor} />
+      <meta
+        name="msapplication-TileImage"
+        content={getIconAssetUrl(service, '144x144')}
       />
-    </Fragment>
+      <meta name="og:description" content={description} />
+      <meta name="og:image" content={defaultImage} />
+      <meta name="og:image:alt" content={defaultImageAltText} />
+      <meta name="og:locale" content={locale} />
+      <meta name="og:site_name" content={brandName} />
+      <meta name="og:title" content={pageTitle} />
+      <meta name="og:type" content={openGraphType} />
+      <meta name="og:url" content={canonicalNonUkLink} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:creator" content={twitterCreator} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image:alt" content={defaultImageAltText} />
+      <meta name="twitter:image:src" content={defaultImage} />
+      <meta name="twitter:site" content={twitterSite} />
+      <meta name="twitter:title" content={pageTitle} />
+      <link rel="apple-touch-icon" href={appleTouchIcon} />
+      {getIconLinks(service, iconSizes)}
+      <link
+        rel="apple-touch-startup-image"
+        href={getIconAssetUrl(service, '512x512')}
+      />
+      <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+      {children}
+    </Helmet>
   );
 };
 
 MetadataContainer.propTypes = {
-  metadata: oneOfType([
-    shape(cpsMetadataPropTypes),
-    shape(optimoMetadataPropTypes),
-  ]).isRequired,
-  promo: oneOfType([shape(cpsPromoPropTypes), shape(optimoPromoPropTypes)])
-    .isRequired,
+  title: string.isRequired,
+  lang: string.isRequired,
+  description: string.isRequired,
+  openGraphType: string.isRequired,
+  children: node,
+};
+
+MetadataContainer.defaultProps = {
+  children: null,
 };
 
 export default MetadataContainer;

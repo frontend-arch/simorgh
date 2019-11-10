@@ -1,75 +1,78 @@
 import React from 'react';
-import { shouldShallowMatchSnapshot } from '../../../../testHelpers';
+import {
+  shouldMatchSnapshot,
+  suppressPropWarnings,
+} from '@bbc/psammead-test-helpers';
 import { articleDataNews, articleDataPersian } from '../../Article/fixtureData';
 import WithData from '.';
-import frontPageDataPidgin from '../../../../../data/pidgin/frontpage';
+import frontPageDataPidgin from '#data/pidgin/frontpage';
+
+// eslint-disable-next-line react/prop-types
+jest.mock('../../ErrorMain', () => ({ status }) => (
+  <h1>This is a {status} error.</h1>
+));
 
 describe('withData HOC', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   const Component = () => <h1>Hola</h1>;
   const WithDataHOC = WithData(Component);
 
   const noDataProps = {
-    data: null,
+    status: 500,
   };
 
   const noAssetData = {
-    data: {
-      status: 200,
-    },
+    status: 200,
   };
 
   const non200StatusProps = {
-    data: {
-      pageData: articleDataNews,
-      status: 157,
-    },
+    pageData: articleDataNews,
+    status: 157,
   };
 
   const validNewsProps = {
-    data: {
-      pageData: articleDataNews,
-      status: 200,
-    },
+    pageData: articleDataNews,
+    status: 200,
     service: 'news',
   };
 
   const validPersianProps = {
-    data: {
-      pageData: articleDataPersian,
-      status: 200,
-    },
+    pageData: articleDataPersian,
+    status: 200,
     service: 'news',
   };
 
   const validFrontPagesProps = {
-    data: {
-      pageData: frontPageDataPidgin,
-      status: 200,
-    },
+    pageData: frontPageDataPidgin,
+    status: 200,
   };
 
   describe('with no data', () => {
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should return the errorMain component and 500 status',
       <WithDataHOC {...noDataProps} />,
     );
   });
 
-  describe('with missing articleData', () => {
-    shouldShallowMatchSnapshot(
+  describe('with missing pageData', () => {
+    suppressPropWarnings(['data.pageData', 'undefined']);
+    shouldMatchSnapshot(
       'should return the errorMain component',
       <WithDataHOC {...noAssetData} />,
     );
   });
 
   describe('with valid articles data', () => {
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should return the passed in component',
       <WithDataHOC {...validNewsProps} />,
     );
 
     describe('but different home service other than locale service', () => {
-      shouldShallowMatchSnapshot(
+      shouldMatchSnapshot(
         'should return the errorMain component',
         <WithDataHOC {...validPersianProps} />,
       );
@@ -77,14 +80,14 @@ describe('withData HOC', () => {
   });
 
   describe('with valid front-pages data', () => {
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should return the passed in component',
       <WithDataHOC {...validFrontPagesProps} />,
     );
   });
 
   describe('with non 200 status', () => {
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should return the errorMain component',
       <WithDataHOC {...non200StatusProps} />,
     );

@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 import * as SectionLabel from '@bbc/psammead-section-label';
-import newsConfig from '../../lib/config/services/news';
-import { shouldShallowMatchSnapshot } from '../../../testHelpers';
+import { shouldMatchSnapshot } from '@bbc/psammead-test-helpers';
+import { service as newsConfig } from '#lib/config/services/news';
 import FrontPageSection from '.';
-import { ServiceContextProvider } from '../../contexts/ServiceContext';
+import { ServiceContextProvider } from '#contexts/ServiceContext';
 
 const React = jest.requireActual('react');
 
@@ -50,6 +50,59 @@ const group = {
   ],
   strapline: {
     name: 'Top Stories',
+  },
+};
+
+const groupWithLink = {
+  type: 'responsive-top-stories-with-links',
+  title: 'Top Stories',
+  items: [
+    {
+      headlines: {
+        headline: 'Top Story 1 headline',
+      },
+      locators: {
+        assetUri: 'https://www.bbc.co.uk',
+      },
+      summary: 'Summary text 1',
+      timestamp: 1557738768,
+      indexImage: {
+        path: '/cpsprodpb/0A06/production/image1.jpg',
+        height: 1152,
+        width: 2048,
+        altText: 'Image Alt text 1',
+        copyrightHolder: 'Image provider 1',
+      },
+      id: 'urn:bbc:ares::asset:igbo/testasset-00000001',
+    },
+    {
+      headlines: {
+        headline: 'Top Story 2 headline',
+      },
+      locators: {
+        assetUri: 'https://www.bbc.co.uk',
+      },
+      summary: 'Summary text 2',
+      timestamp: 1557738768,
+      indexImage: {
+        path: '/cpsprodpb/0A06/production/image2.jpg',
+        height: 1152,
+        width: 2048,
+        altText: 'Image Alt text 2',
+        copyrightHolder: 'Image provider 2',
+      },
+      id: 'urn:bbc:ares::asset:igbo/testasset-00000002',
+    },
+  ],
+  strapline: {
+    name: 'Top Stories',
+    type: 'LINK',
+    links: {
+      highweb: 'https://www.bbc.com/pidgin/sport',
+      desktop: 'https://www.bbc.com/pidgin/sport',
+      mobile: 'https://www.bbc.com/pidgin/sport',
+      enhancedmobile: 'https://www.bbc.com/pidgin/sport',
+    },
   },
 };
 
@@ -133,6 +186,33 @@ const hasOneItem = {
   },
 };
 
+const usefulLinks = {
+  type: 'useful-links',
+  title: 'Useful links',
+  items: [
+    {
+      name: 'Ethiopia: Ndị uweojii agba gbuola ndị mmadụ',
+      uri: 'https://www.bbc.com/igbo/egwuregwu-49946491',
+      contentType: 'Guide',
+      assetTypeCode: 'PRO',
+      timestamp: 1569321103000,
+      type: 'link',
+    },
+    {
+      name: 'Onye isi ala ndị New Zealand dị ime',
+      uri: 'https://www.bbc.com/igbo/egwuregwu-49946491',
+      contentType: 'Guide',
+      assetTypeCode: 'PRO',
+      timestamp: 1569321103000,
+      type: 'link',
+    },
+  ],
+  strapline: {
+    name: 'Useful links',
+  },
+  semanticGroupName: 'Useful links',
+};
+
 jest.mock('react', () => {
   const original = jest.requireActual('react');
   return {
@@ -145,24 +225,29 @@ const { useContext } = jest.requireMock('react');
 describe('FrontPageSection Container', () => {
   describe('snapshots', () => {
     beforeEach(() => {
-      useContext.mockReturnValue(newsConfig);
+      useContext.mockReturnValue(newsConfig.default);
     });
 
     afterEach(() => {
       useContext.mockReset();
     });
 
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should render correctly for canonical',
       <FrontPageSection group={group} sectionNumber={0} />,
     );
 
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
+      'should render correctly with a linking strapline',
+      <FrontPageSection group={groupWithLink} sectionNumber={2} />,
+    );
+
+    shouldMatchSnapshot(
       'should render without a bar',
       <FrontPageSection group={group} bar={false} sectionNumber={1} />,
     );
 
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should render with only one item',
       <FrontPageSection group={hasOneItem} sectionNumber={0} />,
     );
@@ -175,7 +260,7 @@ describe('FrontPageSection Container', () => {
 
     beforeEach(() => {
       jest.spyOn(SectionLabel, 'default');
-      useContext.mockReturnValue(newsConfig);
+      useContext.mockReturnValue(newsConfig.default);
     });
 
     it('should be called with true when sectionNumber === 0', () => {
@@ -227,6 +312,18 @@ describe('FrontPageSection Container', () => {
       expect(container.getElementsByTagName('h3')).toHaveLength(2);
     });
 
+    it('should render with a link when is a linking group', () => {
+      const { container } = render(
+        <ServiceContextProvider service="igbo">
+          <FrontPageSection group={groupWithLink} sectionNumber={0} />
+        </ServiceContextProvider>,
+      );
+
+      expect(
+        container.querySelectorAll('a[class^=SectionLabelLink'),
+      ).toHaveLength(1);
+    });
+
     it('section should have aria-labelledby attribute referring to the id of the label element', () => {
       const { container } = render(
         <ServiceContextProvider service="igbo">
@@ -234,7 +331,7 @@ describe('FrontPageSection Container', () => {
         </ServiceContextProvider>,
       );
       const section = container.getElementsByTagName('section')[0];
-      const label = container.getElementsByTagName('h2')[0];
+      const label = container.querySelector('span[class^=Title]');
 
       expect(section.getAttribute('aria-labelledby')).toBeDefined();
       expect(label.id).toBeDefined();
@@ -293,6 +390,17 @@ describe('FrontPageSection Container', () => {
       expect(image.getAttribute('src')).toEqual(
         'https://ichef.bbci.co.uk/news/660/cpsprodpb/0A06/production/image1.jpg',
       );
+    });
+
+    it('should render useful links when the semantic group name is "Useful links"', () => {
+      const { container } = render(
+        <ServiceContextProvider service="igbo">
+          <FrontPageSection group={usefulLinks} sectionNumber={1} />,
+        </ServiceContextProvider>,
+      );
+
+      expect(container.getElementsByTagName('ul')).toHaveLength(1);
+      expect(container.getElementsByTagName('li')).toHaveLength(2);
     });
   });
 });

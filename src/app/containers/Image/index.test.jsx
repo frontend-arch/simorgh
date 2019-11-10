@@ -1,10 +1,17 @@
 import React from 'react';
+import { render } from 'enzyme';
+import {
+  shouldMatchSnapshot,
+  isNull,
+  suppressPropWarnings,
+} from '@bbc/psammead-test-helpers';
 import ImageContainer from './index';
-import { shouldShallowMatchSnapshot, isNull } from '../../../testHelpers';
 import { blockContainingText, blockArrayModel } from '../../models/blocks';
+import { ServiceContextProvider } from '../../contexts/ServiceContext';
 
 describe('Image', () => {
   describe('with no data', () => {
+    suppressPropWarnings(['blocks', 'array']);
     isNull('should return null', <ImageContainer />);
   });
 
@@ -60,6 +67,7 @@ describe('Image', () => {
     const dataWithoutAltText = blockArrayModel([rawImageBlock, null]);
 
     describe('with no rawImageBlock', () => {
+      suppressPropWarnings(['Missing', 'rawImage']);
       isNull(
         'should return null',
         <ImageContainer {...dataWithoutRawImageBlock} />,
@@ -67,18 +75,20 @@ describe('Image', () => {
     });
 
     describe('with no altTextBlock', () => {
+      suppressPropWarnings(['type', 'null']);
       isNull('should return null', <ImageContainer {...dataWithoutAltText} />);
     });
 
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should render an image with alt text',
       <ImageContainer {...data} />,
     );
 
-    shouldShallowMatchSnapshot(
-      'should render a lazyload container instead of an image if the image is after the 3rd block',
-      <ImageContainer position={[4]} {...data} />,
-    );
+    it('should render a lazyload container instead of an image if the image is after the 3rd block', () => {
+      // Render using enzyme to capture noscript contents
+      const container = render(<ImageContainer position={[4]} {...data} />);
+      expect(container).toMatchSnapshot();
+    });
 
     const dataWithNonBbcCopyright = blockArrayModel([
       rawImageBlockWithNonBbcCopyright,
@@ -88,9 +98,11 @@ describe('Image', () => {
       ),
     ]);
 
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should render an image with alt text and offscreen copyright',
-      <ImageContainer {...dataWithNonBbcCopyright} />,
+      <ServiceContextProvider service="news">
+        <ImageContainer {...dataWithNonBbcCopyright} />
+      </ServiceContextProvider>,
     );
 
     const dataWithCaption = blockArrayModel([
@@ -105,9 +117,11 @@ describe('Image', () => {
       ),
     ]);
 
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should render an image with alt text and caption',
-      <ImageContainer {...dataWithCaption} />,
+      <ServiceContextProvider service="news">
+        <ImageContainer {...dataWithCaption} />
+      </ServiceContextProvider>,
     );
 
     const dataWithOtherOriginCode = blockArrayModel([
@@ -118,9 +132,11 @@ describe('Image', () => {
       ),
     ]);
 
-    shouldShallowMatchSnapshot(
+    shouldMatchSnapshot(
       'should render an image with other originCode - this would be a broken image',
-      <ImageContainer {...dataWithOtherOriginCode} />,
+      <ServiceContextProvider service="news">
+        <ImageContainer {...dataWithOtherOriginCode} />
+      </ServiceContextProvider>,
     );
   });
 });

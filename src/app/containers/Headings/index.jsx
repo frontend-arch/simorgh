@@ -1,16 +1,16 @@
 import React, { useContext } from 'react';
 import { string } from 'prop-types';
 import { Headline, SubHeading } from '@bbc/psammead-headings';
-import { textDefaultPropTypes } from '../../models/propTypes';
-import { ServiceContext } from '../../contexts/ServiceContext';
-import { headlineModelPropTypes } from '../../models/propTypes/headline';
+import { textDefaultPropTypes } from '#models/propTypes';
+import { ServiceContext } from '#contexts/ServiceContext';
+import { headlineModelPropTypes } from '#models/propTypes/headline';
 import Fragment from '../Fragment';
 import Blocks from '../Blocks';
-import idSanitiser from '../../lib/utilities/idSanitiser';
+import idSanitiser from '#lib/utilities/idSanitiser';
 import {
   GridItemConstrainedMedium,
   GridItemConstrainedLarge,
-} from '../../lib/styledGrid';
+} from '#lib/styledGrid';
 
 const Headings = {
   headline: Headline,
@@ -30,7 +30,7 @@ const sanitiseSubheadline = (type, text) => {
 };
 
 const HeadingsContainer = ({ blocks, type }) => {
-  const { script } = useContext(ServiceContext);
+  const { script, service } = useContext(ServiceContext);
   const Heading = Headings[type];
   const GridConstrain = GridConstraints[type];
 
@@ -46,11 +46,13 @@ const HeadingsContainer = ({ blocks, type }) => {
     <Blocks blocks={arrayOfFragments} componentsToRender={componentsToRender} />
   );
 
+  const headingId = 'content'; // Used for the skiplink
   const subHeadingId = sanitiseSubheadline(type, text);
+  const id = type === 'headline' ? headingId : subHeadingId;
 
   return (
     <GridConstrain>
-      <Heading script={script} id={subHeadingId}>
+      <Heading script={script} service={service} id={id} tabIndex="-1">
         {renderText()}
       </Heading>
     </GridConstrain>

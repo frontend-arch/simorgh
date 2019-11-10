@@ -1,6 +1,6 @@
 import React from 'react';
 import { latin, arabic } from '@bbc/gel-foundations/scripts';
-import { shouldMatchSnapshot } from '../../../testHelpers';
+import { shouldMatchSnapshot } from '@bbc/psammead-test-helpers';
 import ErrorMain from './index';
 
 describe('ErrorMain', () => {
@@ -13,15 +13,19 @@ describe('ErrorMain', () => {
     callToActionLinkText: 'this',
     callToActionLinkUrl: 'https://www.bbc.com',
     callToActionLast: ' thing',
+    service: 'news',
   };
 
   shouldMatchSnapshot(
     'should correctly render for an error page for News',
-    <ErrorMain {...messaging} script={latin} />,
+    <ErrorMain {...messaging} script={latin} service="news" />,
   );
 
-  shouldMatchSnapshot(
-    'should correctly render for an error page for Persian',
-    <ErrorMain {...messaging} script={arabic} />,
-  );
+  const arabicServices = ['persian', 'arabic', 'pashto', 'urdu'];
+  arabicServices.forEach(service => {
+    shouldMatchSnapshot(
+      `should correctly render for an error page for ${service}`,
+      <ErrorMain {...messaging} script={arabic} service={service} />,
+    );
+  });
 });

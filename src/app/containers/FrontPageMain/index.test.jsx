@@ -1,42 +1,62 @@
 import React from 'react';
 import { render, cleanup } from '@testing-library/react';
+import { matchSnapshotAsync } from '@bbc/psammead-test-helpers';
 import FrontPageMain from '.';
-import { shouldShallowMatchSnapshot } from '../../../testHelpers';
-import frontPageDataIgbo from '../../../../data/pidgin/frontpage';
-import igboConfig from '../../lib/config/services/igbo';
+import frontPageDataPidgin from '#data/pidgin/frontpage';
+import preprocessor from '#lib/utilities/preprocessor';
+import { indexPreprocessorRules } from '#app/routes/getInitialData/utils/preprocessorRulesConfig';
+import { RequestContextProvider } from '#contexts/RequestContext';
+import { ServiceContextProvider } from '#contexts/ServiceContext';
 
-jest.mock('react', () => {
-  const original = jest.requireActual('react');
-  return {
-    ...original,
-    useContext: jest.fn(),
-  };
+const processedPidgin = () =>
+  preprocessor(frontPageDataPidgin, indexPreprocessorRules);
+
+jest.mock('uuid', () =>
+  (() => {
+    let x = 1;
+    return () => {
+      x += 1;
+      return `mockid-${x}`;
+    };
+  })(),
+);
+
+jest.mock('../ChartbeatAnalytics', () => {
+  const ChartbeatAnalytics = () => <div>chartbeat</div>;
+  return ChartbeatAnalytics;
 });
 
-const { useContext } = jest.requireMock('react');
+const requestContextData = {
+  isAmp: false,
+  service: 'igbo',
+  statusCode: 200,
+  pageType: 'frontPage',
+  pathname: '/pathname',
+};
+
+const FrontPageMainWithContext = props => (
+  <RequestContextProvider {...requestContextData}>
+    <ServiceContextProvider service="igbo">
+      <FrontPageMain {...props} />
+    </ServiceContextProvider>
+  </RequestContextProvider>
+);
 
 describe('FrontPageMain', () => {
-  beforeEach(() => {
-    useContext.mockReturnValue(igboConfig);
-  });
-
-  afterEach(() => {
-    useContext.mockReset();
-  });
-
   describe('snapshots', () => {
-    shouldShallowMatchSnapshot(
-      'should render an igbo frontpage correctly',
-      <FrontPageMain frontPageData={frontPageDataIgbo} />,
-    );
+    it('should render a pidgin frontpage correctly', async () => {
+      await matchSnapshotAsync(
+        <FrontPageMainWithContext frontPageData={await processedPidgin()} />,
+      );
+    });
   });
 
   describe('assertions', () => {
     afterEach(cleanup);
 
-    it('should render visually hidden text as h1', () => {
+    it('should render visually hidden text as h1', async () => {
       const { container } = render(
-        <FrontPageMain frontPageData={frontPageDataIgbo} />,
+        <FrontPageMainWithContext frontPageData={await processedPidgin()} />,
       );
       const h1 = container.querySelector('h1');
       const content = h1.getAttribute('id');
@@ -54,9 +74,9 @@ describe('FrontPageMain', () => {
       expect(langSpan.textContent).toEqual('BBC News');
     });
 
-    it('should render front page sections', () => {
+    it('should render front page sections', async () => {
       const { container } = render(
-        <FrontPageMain frontPageData={frontPageDataIgbo} />,
+        <FrontPageMainWithContext frontPageData={await processedPidgin()} />,
       );
       const sections = container.querySelectorAll('section');
 

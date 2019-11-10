@@ -1,75 +1,64 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { storiesOf } from '@storybook/react';
-import igboData from '../../../../data/igbo/frontpage';
-import yorubaData from '../../../../data/yoruba/frontpage';
-import pidginData from '../../../../data/pidgin/frontpage';
-import filterUnknownCpsTypes from '../../lib/utilities/preprocessor/rules/cpstypes';
-import filterEmptyGroupItems from '../../lib/utilities/preprocessor/rules/filterEmptyGroupItems';
-import applySquashTopstories from '../../lib/utilities/preprocessor/rules/topstories';
-import preprocess from '../../lib/utilities/preprocessor';
+import igboData from '#data/igbo/frontpage';
+import pidginData from '#data/pidgin/frontpage';
+import addIdsToItems from '#lib/utilities/preprocessor/rules/addIdsToItems';
+import thaiData from '#data/thai/frontpage';
+import yorubaData from '#data/yoruba/frontpage';
+import punjabiData from '#data/punjabi/frontpage';
+import filterUnknownContentTypes from '#lib/utilities/preprocessor/rules/filterContentType';
+import filterEmptyGroupItems from '#lib/utilities/preprocessor/rules/filterEmptyGroupItems';
+import applySquashTopstories from '#lib/utilities/preprocessor/rules/topstories';
+import preprocess from '#lib/utilities/preprocessor';
 import FrontPage from '.';
+import WithTimeMachine from '#testHelpers/withTimeMachine';
 
 const preprocessorRules = [
-  filterUnknownCpsTypes,
+  filterUnknownContentTypes,
+  addIdsToItems,
   filterEmptyGroupItems,
   applySquashTopstories,
 ];
 
-storiesOf('Front Page', module)
-  .add('Igbo', () => {
-    const igboFrontPageData = preprocess(igboData, preprocessorRules);
+const serviceDatasets = {
+  igbo: igboData,
+  yoruba: yorubaData,
+  pidgin: pidginData,
+  thai: thaiData,
+  punjabi: punjabiData,
+};
 
-    const data = {
-      pageData: igboFrontPageData,
-      status: 200,
-    };
+// eslint-disable-next-line react/prop-types
+const DataWrapper = ({ service, children }) => {
+  const [data, setData] = useState();
 
+  useEffect(() => {
+    preprocess(serviceDatasets[service], preprocessorRules).then(setData);
+  }, [service]);
+
+  return data ? children(data) : null;
+};
+
+const stories = storiesOf('Pages|Front Page', module).addDecorator(story => (
+  <WithTimeMachine>{story()}</WithTimeMachine>
+));
+
+Object.keys(serviceDatasets).forEach(service => {
+  stories.add(service, () => {
     return (
-      <FrontPage
-        data={data}
-        service="igbo"
-        isAmp={false}
-        loading={false}
-        error=""
-        pageType="frontPage"
-      />
-    );
-  })
-  .add('Yoruba', () => {
-    const yorubaFrontPageData = preprocess(yorubaData, preprocessorRules);
-
-    const data = {
-      pageData: yorubaFrontPageData,
-      status: 200,
-    };
-
-    return (
-      <FrontPage
-        data={data}
-        service="yoruba"
-        isAmp={false}
-        loading={false}
-        error=""
-        pageType="frontPage"
-      />
-    );
-  })
-  .add('Pidgin', () => {
-    const pidginFrontPageData = preprocess(pidginData, preprocessorRules);
-
-    const data = {
-      pageData: pidginFrontPageData,
-      status: 200,
-    };
-
-    return (
-      <FrontPage
-        data={data}
-        service="pidgin"
-        isAmp={false}
-        loading={false}
-        error=""
-        pageType="frontPage"
-      />
+      <DataWrapper service={service}>
+        {frontPageData => (
+          <FrontPage
+            pageData={frontPageData}
+            status={200}
+            service={service}
+            isAmp={false}
+            loading={false}
+            error={null}
+            pageType="frontPage"
+          />
+        )}
+      </DataWrapper>
     );
   });
+});
